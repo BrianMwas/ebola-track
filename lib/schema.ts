@@ -153,6 +153,26 @@ export const TimeseriesSchema = z.strictObject({
 })
 export type Timeseries = z.infer<typeof TimeseriesSchema>
 
+/* ------------------------------------------------------------ weekly.json */
+
+export const WeeklySchema = z
+  .strictObject({
+    data_as_of: isoDate,
+    /** Last day of each 7-day window, oldest first; the last one is `data_as_of`. */
+    week_ends: z.array(isoDate).min(1),
+    /** New confirmed cases per window, summed over all tracked zones. */
+    zone_total: z.array(count),
+    /** New confirmed cases per window for each tracked zone, keyed by zone id. */
+    zones: z.record(z.string(), z.array(count)),
+  })
+  .superRefine((w, ctx) => {
+    const n = w.week_ends.length
+    if (w.zone_total.length !== n || Object.values(w.zones).some((v) => v.length !== n)) {
+      ctx.addIssue({ code: "custom", message: "every series must have one value per week" })
+    }
+  })
+export type Weekly = z.infer<typeof WeeklySchema>
+
 /* ---------------------------------------- data/country-totals.json (input) */
 
 const casesByOrigin = z.strictObject({

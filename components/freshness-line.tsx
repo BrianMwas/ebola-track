@@ -6,9 +6,8 @@ import { formatRelative } from "@/lib/format"
 import type { Latest } from "@/lib/schema"
 import { isDatasetStale } from "@/lib/status"
 import { en } from "@/lib/strings"
-import { cn } from "@/lib/utils"
 
-/** "Data as of … · INRB release … · checked … ago"; warning style when stale. */
+/** "Data as of … · INRB release … · checked … ago"; a warning when stale. */
 export function FreshnessLine({ latest }: { latest: Latest }) {
   // Rendered only on the client, after the snapshot has loaded.
   const [now, setNow] = React.useState(() => new Date())
@@ -22,17 +21,15 @@ export function FreshnessLine({ latest }: { latest: Latest }) {
   const checked = formatRelative(latest.snapshot, now)
 
   return (
-    <div
-      role="status"
-      className={cn(
-        "flex flex-col gap-1 rounded-xl px-4 py-3 text-sm",
-        stale
-          ? "border border-amber-600/40 bg-amber-50 text-amber-950 dark:bg-amber-950/40 dark:text-amber-100"
-          : "bg-muted text-muted-foreground"
+    <div role="status" className="flex flex-col gap-2">
+      <p className="text-[15px] text-ink-2">
+        {en.freshness(latest.data_as_of, latest.inrb_release_tag, checked)}
+      </p>
+      {stale && (
+        <p className="w-fit rounded bg-sun-soft px-3 py-2 text-sm font-medium text-sun-foreground">
+          {en.freshnessStale}
+        </p>
       )}
-    >
-      <p>{en.freshness(latest.data_as_of, latest.inrb_release_tag, checked)}</p>
-      {stale && <p className="font-medium">{en.freshnessStale}</p>}
     </div>
   )
 }

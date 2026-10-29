@@ -20,6 +20,7 @@ import path from "node:path"
 import mapshaper from "mapshaper"
 import type { z } from "zod"
 
+import { buildWeekly } from "../lib/chart-data"
 import { parseCsv } from "../lib/csv"
 import {
   INRB_REPO,
@@ -36,6 +37,7 @@ import {
   ProvenanceSchema,
   SummarySchema,
   TimeseriesSchema,
+  WeeklySchema,
   ZonesSchema,
   type CountrySummary,
   type Provenance,
@@ -622,6 +624,8 @@ async function main() {
     )
   })
 
+  const weekly = validate(WeeklySchema, buildWeekly(timeseries, dataAsOf), "weekly.json")
+
   /* 9. Provenance */
   const anomalies: Anomaly[] = [
     ...confirmed.anomalies,
@@ -735,6 +739,7 @@ async function main() {
   await writeJson(path.join(OUT, "provenance.json"), provenance, true)
   await writeJson(path.join(OUT, "zones.geojson"), zones)
   await writeJson(path.join(OUT, "context.geojson"), context)
+  await writeJson(path.join(OUT, "weekly.json"), weekly)
   for (const ts of timeseries) {
     await writeJson(path.join(OUT, "timeseries", `${ts.id}.json`), ts)
   }
