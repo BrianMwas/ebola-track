@@ -84,7 +84,10 @@ export function contextLayers(hasBasemap: boolean): LayerSpec[] {
   ]
 }
 
-export function zoneLayers(hasBasemap: boolean): LayerSpec[] {
+/** How long the map takes to colour in and grow its circles; 0 when motion is reduced. */
+export type Reveal = { shown: boolean; duration: number }
+
+export function zoneLayers(hasBasemap: boolean, reveal: Reveal): LayerSpec[] {
   return [
     {
       id: "zones-fill",
@@ -102,12 +105,10 @@ export function zoneLayers(hasBasemap: boolean): LayerSpec[] {
           STATUS_COLORS.cleared,
           STATUS_COLORS.never,
         ],
-        "fill-opacity": [
-          "case",
-          ["==", ["get", "status"], "never"],
-          hasBasemap ? 0.35 : 1,
-          0.9,
-        ],
+        "fill-opacity": reveal.shown
+          ? ["case", ["==", ["get", "status"], "never"], hasBasemap ? 0.35 : 1, 0.9]
+          : 0,
+        "fill-opacity-transition": { duration: reveal.duration, delay: 0 },
       },
     },
     {
@@ -115,7 +116,11 @@ export function zoneLayers(hasBasemap: boolean): LayerSpec[] {
       type: "fill",
       source: SOURCES.zones,
       filter: ["==", ["get", "stale"], true],
-      paint: { "fill-pattern": STALE_PATTERN_ID },
+      paint: {
+        "fill-pattern": STALE_PATTERN_ID,
+        "fill-opacity": reveal.shown ? 1 : 0,
+        "fill-opacity-transition": { duration: reveal.duration, delay: 0 },
+      },
     },
     {
       id: "zones-line",
@@ -140,20 +145,25 @@ export function selectedZoneLayer(selectedId: string | null): LayerSpec {
   }
 }
 
-export function circleLayer(metric: CircleMetric, scale: number): LayerSpec {
+export function circleLayer(metric: CircleMetric, scale: number, reveal: Reveal): LayerSpec {
   return {
     id: "zone-circles",
     type: "circle",
     source: SOURCES.points,
     filter: [">", ["get", metric], 0],
     paint: {
-      "circle-radius": ["*", scale, ["sqrt", ["get", metric]]],
+      // Circles grow in after the zones colour in, and resize smoothly when the metric changes.
+      "circle-radius": reveal.shown ? ["*", scale, ["sqrt", ["get", metric]]] : 0,
+      "circle-radius-transition": { duration: reveal.duration * 1.3, delay: reveal.shown ? reveal.duration / 2 : 0 },
       // White fill with an ink outline reads on both light and dark zone fills.
       "circle-color": "#ffffff",
-      "circle-opacity": 0.45,
+      "circle-opacity": reveal.shown ? 0.45 : 0,
       "circle-stroke-color": INK,
       "circle-stroke-width": 1.5,
-      "circle-stroke-opacity": 0.9,
+      // Hidden outlines too, or zero-radius circles would show as dots before the reveal.
+      "circle-stroke-opacity": reveal.shown ? 0.9 : 0,
+      "circle-opacity-transition": { duration: reveal.duration, delay: reveal.shown ? reveal.duration / 2 : 0 },
+      "circle-stroke-opacity-transition": { duration: reveal.duration, delay: reveal.shown ? reveal.duration / 2 : 0 },
     },
   }
 }

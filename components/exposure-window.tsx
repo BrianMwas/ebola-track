@@ -116,7 +116,10 @@ export function ExposureWindow() {
           <p className="rounded bg-sun-soft px-3 py-2.5 text-[15px] text-sun-foreground">{en.exposure.future}</p>
         )}
         {r && (
-          <div className="flex flex-col gap-2.5 border-t-2 border-t-link pt-3">
+          <div
+            key={`${mode}-${date}`}
+            className="flex flex-col gap-2.5 border-t-2 border-t-link pt-3 motion-safe:animate-fade-up"
+          >
             <div className="flex flex-col">
               <span className="text-sm text-ink-2">{r.label}</span>
               <span className="font-heading text-[26px] leading-tight font-bold tracking-[-0.01em]">{r.value}</span>
@@ -126,7 +129,11 @@ export function ExposureWindow() {
               {r.cells.map((c, i) => (
                 <span
                   key={i}
-                  className={cn("h-3 flex-1", c === "in" ? "bg-chart-2" : c === "onset" ? "bg-foreground" : "bg-border")}
+                  className={cn(
+                    "h-3 flex-1 motion-safe:animate-fade-in",
+                    c === "in" ? "bg-chart-2" : c === "onset" ? "bg-foreground" : "bg-border"
+                  )}
+                  style={{ animationDelay: `${i * 18}ms` }}
                 />
               ))}
             </div>

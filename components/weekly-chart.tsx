@@ -1,9 +1,13 @@
+"use client"
+
 import * as React from "react"
 
 import { niceMax } from "@/lib/chart-data"
 import { formatNumber, formatShortDate } from "@/lib/format"
 import type { Weekly } from "@/lib/schema"
 import { en } from "@/lib/strings"
+import { useInViewOnce } from "@/lib/use-media-query"
+import { cn } from "@/lib/utils"
 import { SectionTitle } from "@/components/ui/section-title"
 
 /**
@@ -20,8 +24,12 @@ export function WeeklyChart({ weekly }: { weekly: Weekly }) {
   const last14 = (values[n - 1] ?? 0) + (values[n - 2] ?? 0)
   const prev14 = (values[n - 3] ?? 0) + (values[n - 4] ?? 0)
 
+  const [ref, seen] = useInViewOnce<HTMLElement>()
   return (
-    <section id="weekly" className="flex scroll-mt-4 flex-col gap-3" aria-labelledby="weekly-title">
+    <section
+      ref={ref}
+      id="weekly"
+      className={cn("flex scroll-mt-4 flex-col gap-3", !seen && "reveal-wait")} aria-labelledby="weekly-title">
       <div className="flex flex-col gap-0.5">
         <SectionTitle id="weekly-title">{en.weekly.title}</SectionTitle>
         <p className="text-[15px] text-ink-2">
@@ -54,8 +62,8 @@ export function WeeklyChart({ weekly }: { weekly: Weekly }) {
               <span
                 key={weekly.week_ends[i]}
                 title={en.weekly.bar(weekly.week_ends[i], v)}
-                className={i >= n - 2 ? "bg-chart-2" : "bg-chart-1"}
-                style={{ height: `${(v / top) * 100}%` }}
+                className={`origin-bottom motion-safe:animate-grow-up ${i >= n - 2 ? "bg-chart-2" : "bg-chart-1"}`}
+                style={{ height: `${(v / top) * 100}%`, animationDelay: `${i * 35}ms` }}
               />
             ))}
           </div>

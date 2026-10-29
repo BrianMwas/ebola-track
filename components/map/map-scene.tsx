@@ -5,6 +5,7 @@ import * as React from "react"
 import type { CountrySummary, Zones, Context } from "@/lib/schema"
 import { formatNumber } from "@/lib/format"
 import { en } from "@/lib/strings"
+import { useInViewOnce, usePrefersReducedMotion } from "@/lib/use-media-query"
 import { cn } from "@/lib/utils"
 
 import {
@@ -96,6 +97,16 @@ export function MapScene({
   const [ready, setReady] = React.useState(false)
   const [hover, setHover] = React.useState<Hover | null>(null)
   const loadedRef = React.useRef(false)
+  const reducedMotion = usePrefersReducedMotion()
+  // Layers are added hidden, then shown a frame later so the map's own paint transitions fade them in.
+  const [regionRef, seen] = useInViewOnce<HTMLDivElement>()
+  const [shown, setShown] = React.useState(false)
+  React.useEffect(() => {
+    if (!ready || !seen) return
+    const t = setTimeout(() => setShown(true), 60)
+    return () => clearTimeout(t)
+  }, [ready, seen])
+  const reveal = { shown: shown || reducedMotion, duration: reducedMotion ? 0 : 700 }
 
   const points = React.useMemo(
     () => ({
@@ -173,7 +184,7 @@ export function MapScene({
   )
 
   return (
-    <div className="relative size-full" aria-label={en.map.label} role="region">
+    <div ref={regionRef} className="relative size-full" aria-label={en.map.label} role="region">
       <Map
         initialViewState={{ bounds: INITIAL_BOUNDS, fitBoundsOptions: { padding: 8 } }}
         mapStyle={hasBasemap ? undefined : fallbackStyle}
@@ -200,13 +211,13 @@ export function MapScene({
               ))}
             </Source>
             <Source id={SOURCES.zones} type="geojson" data={zones}>
-              {zoneLayers(hasBasemap).map((l) => (
+              {zoneLayers(hasBasemap, reveal).map((l) => (
                 <Layer key={l.id} {...l} beforeId={beforeId} />
               ))}
               <Layer {...selectedZoneLayer(selectedZoneId)} />
             </Source>
             <Source id={SOURCES.points} type="geojson" data={points}>
-              <Layer {...circleLayer(metric, circleScale)} />
+              <Layer {...circleLayer(metric, circleScale, reveal)} />
             </Source>
           </>
         )}

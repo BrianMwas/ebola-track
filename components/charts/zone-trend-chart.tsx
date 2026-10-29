@@ -14,6 +14,7 @@ import {
 import type { DailyBar } from "@/lib/chart-data"
 import { formatDate, formatNumber, formatShortDate } from "@/lib/format"
 import { en } from "@/lib/strings"
+import { usePrefersReducedMotion } from "@/lib/use-media-query"
 
 /**
  * Daily new confirmed cases by report date, with the last 14 days
@@ -30,6 +31,7 @@ export default function ZoneTrendChart({
   bars: DailyBar[]
   summary: string
 }) {
+  const reducedMotion = usePrefersReducedMotion()
   const ticks = [bars[0]?.date, bars[Math.floor(bars.length / 2)]?.date, bars.at(-1)?.date]
     .filter(Boolean) as string[]
 
@@ -62,7 +64,12 @@ export default function ZoneTrendChart({
               )}
               isAnimationActive={false}
             />
-            <Bar dataKey="new" isAnimationActive={false}>
+            <Bar
+              dataKey="new"
+              isAnimationActive={!reducedMotion}
+              animationDuration={600}
+              animationEasing="ease-out"
+            >
               {bars.map((b) => (
                 <Cell
                   key={b.date}

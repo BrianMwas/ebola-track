@@ -145,6 +145,24 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+    /* One-time reveals when data arrives. Used with motion-safe: only. */
+    --animate-grow-up: grow-up 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    --animate-grow-right: grow-right 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    --animate-fade-in: fade-in 400ms ease-out both;
+    --animate-fade-up: fade-up 350ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+    @keyframes grow-up {
+        from { transform: scaleY(0); }
+    }
+    @keyframes grow-right {
+        from { transform: scaleX(0); }
+    }
+    @keyframes fade-in {
+        from { opacity: 0; }
+    }
+    @keyframes fade-up {
+        from { opacity: 0; transform: translateY(6px); }
+    }
 }
 
 @layer base {
@@ -161,4 +179,10 @@
   a {
     @apply text-link hover:text-link-hover;
     }
+}
+
+/* A section waiting to be scrolled into view keeps its reveal at the first frame. */
+.reveal-wait,
+.reveal-wait * {
+    animation-play-state: paused !important;
 }

@@ -1,9 +1,12 @@
+"use client"
+
 import * as React from "react"
 
 import { provinceRows, trackedZones } from "@/lib/chart-data"
 import { formatNumber } from "@/lib/format"
 import type { Latest, Summary, Zones } from "@/lib/schema"
 import { trendOf } from "@/lib/status"
+import { useCountUp, useInViewOnce } from "@/lib/use-media-query"
 import { en } from "@/lib/strings"
 import { FreshnessLine } from "@/components/freshness-line"
 import { STATUS_TEXT } from "@/components/map/map-style"
@@ -25,6 +28,7 @@ export function Overview({
   const prev14 = tracked.reduce((s, z) => s + z.prev_14d, 0)
   const active = tracked.filter((z) => z.status === "active").length
   const activeProvinces = provinceRows(zones).filter((p) => p.active > 0).length
+  const [ref, seen] = useInViewOnce<HTMLDListElement>()
 
   return (
     <section className="flex flex-col gap-5" aria-labelledby="page-title">
@@ -37,11 +41,12 @@ export function Overview({
         </h1>
         <FreshnessLine latest={latest} />
       </div>
-      <dl className="grid grid-cols-2 border-t-2 border-t-rule sm:grid-cols-4 sm:border-b">
+      <dl ref={ref} className="grid grid-cols-2 border-t-2 border-t-rule sm:grid-cols-4 sm:border-b">
         {drc && (
           <Stat
             label={en.overview.casesDrc}
-            value={formatNumber(drc.confirmed_cases)}
+            value={drc.confirmed_cases}
+            start={seen}
             note={en.overview.elsewhereCases(
               others.reduce((s, c) => s + c.confirmed_cases, 0),
               others.length
@@ -51,18 +56,21 @@ export function Overview({
         {drc && (
           <Stat
             label={en.overview.deathsDrc}
-            value={formatNumber(drc.confirmed_deaths)}
+            value={drc.confirmed_deaths}
+            start={seen}
             note={en.overview.elsewhereDeaths(others.reduce((s, c) => s + c.confirmed_deaths, 0))}
           />
         )}
         <Stat
           label={en.overview.new14}
-          value={formatNumber(new14)}
+          value={new14}
+          start={seen}
           note={en.overview.new14Note(trendOf(new14, prev14), prev14)}
         />
         <Stat
           label={en.overview.activeZones}
-          value={formatNumber(active)}
+          value={active}
+          start={seen}
           valueColor={STATUS_TEXT.active}
           note={en.overview.activeNote(tracked.length, activeProvinces)}
         />
@@ -76,9 +84,11 @@ function Stat({
   value,
   note,
   valueColor,
+  start,
 }: {
   label: string
-  value: string
+  value: number
+  start: boolean
   note: string
   valueColor?: string
 }) {
@@ -89,9 +99,20 @@ function Stat({
         className="font-heading text-[28px] leading-tight font-bold tracking-[-0.02em] sm:text-[34px]"
         style={valueColor ? { color: valueColor } : undefined}
       >
-        {value}
+        <CountUp value={value} start={start} />
       </dd>
       <dd className="text-[13px] text-muted-foreground">{note}</dd>
     </div>
+  )
+}
+
+/** The final number is in the accessibility tree from the start; only the visible digits count up. */
+function CountUp({ value, start }: { value: number; start: boolean }) {
+  const shown = useCountUp(value, start)
+  return (
+    <>
+      <span aria-hidden>{formatNumber(shown)}</span>
+      <span className="sr-only">{formatNumber(value)}</span>
+    </>
   )
 }

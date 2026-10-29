@@ -5,6 +5,8 @@ import * as React from "react"
 import { formatNumber } from "@/lib/format"
 import type { Weekly, ZoneProperties } from "@/lib/schema"
 import { en } from "@/lib/strings"
+import { useInViewOnce } from "@/lib/use-media-query"
+import { cn } from "@/lib/utils"
 import { StatusMark } from "@/components/status-mark"
 import { TrendArrow } from "@/components/trend-arrow"
 import { SectionTitle } from "@/components/ui/section-title"
@@ -26,11 +28,15 @@ export function ZoneTable({
   onSelect: (id: string) => void
 }) {
   const [all, setAll] = React.useState(false)
+  const [ref, seen] = useInViewOnce<HTMLElement>()
   const shown = all ? zones : zones.slice(0, TOP)
   const th = "px-3 py-2 font-semibold"
   const td = "px-3 py-2.5"
   return (
-    <section id="zones" className="flex scroll-mt-4 flex-col gap-3" aria-labelledby="zones-title">
+    <section
+      ref={ref}
+      id="zones"
+      className={cn("flex scroll-mt-4 flex-col gap-3", !seen && "reveal-wait")} aria-labelledby="zones-title">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <SectionTitle id="zones-title">{en.zoneTable.title}</SectionTitle>
         {zones.length > TOP && (
@@ -94,8 +100,11 @@ export function ZoneTable({
                       {spark.map((v, i) => (
                         <span
                           key={i}
-                          className={`flex-1 ${i >= spark.length - 2 ? "bg-chart-2" : "bg-chart-1"}`}
-                          style={{ height: `${Math.max(v ? 8 : 4, (v / peak) * 100)}%` }}
+                          className={`flex-1 origin-bottom motion-safe:animate-grow-up ${i >= spark.length - 2 ? "bg-chart-2" : "bg-chart-1"}`}
+                          style={{
+                            height: `${Math.max(v ? 8 : 4, (v / peak) * 100)}%`,
+                            animationDelay: `${i * 30}ms`,
+                          }}
                         />
                       ))}
                     </span>
