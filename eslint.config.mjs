@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated: copied vendor worker and the snapshot build cache.
+    "public/vendor/**",
+    ".cache/**",
   ]),
 ]);
 

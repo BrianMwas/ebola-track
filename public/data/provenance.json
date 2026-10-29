@@ -1,0 +1,393 @@
+{
+  "generated_at": "2026-10-29T14:05:11.764Z",
+  "sources": [
+    {
+      "id": "inrb-release",
+      "name": "INRB-UMIE BDBV2026-Data, release build-2026-10-28-aad9fdd",
+      "url": "https://github.com/INRB-UMIE/BDBV2026-Data/releases/tag/build-2026-10-28-aad9fdd",
+      "retrieved_at": "2026-10-29T14:05:11.764Z",
+      "reference": "build-2026-10-28-aad9fdd",
+      "licence": "Repository code MIT (Kraemer Lab, University of Oxford). Epidemiological data is preliminary; the maintainers ask to be contacted before use prior to publication. Third-party layers keep their own licences.",
+      "note": "Cite the repository (Zenodo DOI 10.5281/zenodo.21223302 per the README badge; the README citation section gives 10.5281/zenodo.20922946) and Mbulayi et al., Lancet Infectious Diseases: https://www.thelancet.com/journals/laninf/article/PIIS1473-3099(26)00330-0/fulltext"
+    },
+    {
+      "id": "insp-sitrep",
+      "name": "Institut National de Santé Publique (INSP) Situation Reports — SitRep MVE series (2026 Bundibugyo Ebolavirus outbreak)",
+      "url": "https://insp.cd/",
+      "retrieved_at": "2026-10-29T14:05:11.764Z",
+      "reference": "SitRep MVE report dates up to 2026-10-27 (transcribed by INRB)",
+      "licence": "INSP outbreak sitreps; reuse with attribution to INSP and citation of the specific report number and date. Confirm distribution terms with INSP before external republication.",
+      "note": "Institut National de Santé Publique (INSP), Democratic Republic of the Congo. Situation reports on the 2026 Bundibugyo Ebolavirus outbreak (SitRep MVE 001, 002, 004–012, 2026; report 003 not committed). Health-zone geometry: DRC_Health_zones.shp (see data/shapefiles/)."
+    },
+    {
+      "id": "worldpop",
+      "name": "WorldPop gridded population estimates aggregated to DRC health zones",
+      "url": "https://www.worldpop.org/",
+      "retrieved_at": "2026-10-29T14:05:11.764Z",
+      "reference": "retrieved by INRB 2026-05-20",
+      "licence": "Creative Commons Attribution 4.0 International (CC BY 4.0); see https://www.worldpop.org/geodata/licensing",
+      "note": "WorldPop (2025). Population counts and densities for Democratic Republic of the Congo health zones. University of Southampton. https://www.worldpop.org. Health-zone geometry: DRC_Health_zones.shp (see data/shapefiles/)."
+    },
+    {
+      "id": "health-zones",
+      "name": "GRID3 COD Health Zones v8.0, via the INRB build",
+      "url": "https://data.grid3.org/datasets/GRID3::grid3-cod-health-zones-v8-0",
+      "retrieved_at": "2026-10-29T14:05:11.764Z",
+      "reference": "build-2026-10-28-aad9fdd build/drc_health_zones.geojson",
+      "licence": "Not stated in the INRB repository; to be confirmed on the GRID3 dataset page before launch.",
+      "note": "Simplified with mapshaper. Unaffected provinces are dissolved into outlines."
+    },
+    {
+      "id": "natural-earth",
+      "name": "Natural Earth 1:50m Admin 0 countries",
+      "url": "https://www.naturalearthdata.com/",
+      "retrieved_at": "2026-10-29T14:05:11.764Z",
+      "reference": "natural-earth-vector v5.1.2",
+      "licence": "Public domain",
+      "note": "Country outlines and country label points (used to place country-level markers; not exact locations)."
+    },
+    {
+      "id": "country-cod",
+      "name": "ECDC: Ebola disease multi-country outbreak 2026",
+      "url": "https://www.ecdc.europa.eu/en/ebola-disease-multi-country-outbreak-2026",
+      "retrieved_at": "2026-10-29T00:00:00Z",
+      "reference": "Democratic Republic of the Congo, as of 2026-10-26",
+      "licence": "Figures as published by the source; see the source's terms.",
+      "note": "Community transmission, 8 provinces"
+    },
+    {
+      "id": "country-uga",
+      "name": "CDC: Ebola situation summary",
+      "url": "https://www.cdc.gov/ebola/situation-summary/index.html",
+      "retrieved_at": "2026-10-29T00:00:00Z",
+      "reference": "Uganda, as of n/a",
+      "licence": "Figures as published by the source; see the source's terms.",
+      "note": "Outbreak declared over (27 Aug per UKHSA)"
+    },
+    {
+      "id": "country-ken",
+      "name": "ebola-tracker.org (cites Kenya Ministry of Health and WHO)",
+      "url": "https://ebola-tracker.org/en/kenya/",
+      "retrieved_at": "2026-10-29T00:00:00Z",
+      "reference": "Kenya, as of 2026-10-26",
+      "licence": "Figures as published by the source; see the source's terms.",
+      "note": "One cluster linked to an imported case. 135 contacts traced. First 20 contacts left quarantine 26 Oct"
+    },
+    {
+      "id": "country-nga",
+      "name": "ECDC: Ebola disease multi-country outbreak 2026",
+      "url": "https://www.ecdc.europa.eu/en/ebola-disease-multi-country-outbreak-2026",
+      "retrieved_at": "2026-10-29T00:00:00Z",
+      "reference": "Nigeria, as of 2026-10-26",
+      "licence": "Figures as published by the source; see the source's terms.",
+      "note": "Imported via Entebbe. Patient medevaced to Switzerland on 26 Oct"
+    },
+    {
+      "id": "country-fra",
+      "name": "CDC: Ebola situation summary",
+      "url": "https://www.cdc.gov/ebola/situation-summary/index.html",
+      "retrieved_at": "2026-10-29T00:00:00Z",
+      "reference": "France, as of 2026-10-25",
+      "licence": "Figures as published by the source; see the source's terms.",
+      "note": "Returning doctor, no onward transmission"
+    },
+    {
+      "id": "country-nld",
+      "name": "WHO Disease Outbreak News DON619",
+      "url": "https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON619",
+      "retrieved_at": "2026-10-29T00:00:00Z",
+      "reference": "Netherlands, as of 2026-10-01",
+      "licence": "Figures as published by the source; see the source's terms.",
+      "note": "MSF worker infected in DRC and medevaced. Not counted by CDC"
+    }
+  ],
+  "release": {
+    "tag": "build-2026-10-28-aad9fdd",
+    "tarball_url": "https://github.com/INRB-UMIE/BDBV2026-Data/releases/download/build-2026-10-28-aad9fdd/build-2026-10-28-aad9fdd.tar.gz",
+    "sha256": "c60a0adf1bdb580141ec1284c4caa6690093cf3160992a181af2cc713b85c3a0",
+    "bytes": 5305804,
+    "manifest_built_at": "2026-10-28T21:50:45+00:00",
+    "manifest_commit": "aad9fdd"
+  },
+  "revisions": [
+    {
+      "zone_id": "ET5R8zSN3gm",
+      "nom": "Wamba",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-07-18",
+      "value": 6,
+      "previous_date": "2026-07-17",
+      "previous_value": 16
+    },
+    {
+      "zone_id": "CLboGR4F3lj",
+      "nom": "Adja",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-10-12",
+      "value": 11,
+      "previous_date": "2026-10-11",
+      "previous_value": 12
+    },
+    {
+      "zone_id": "fM8IqjhdeyL",
+      "nom": "Ariwara",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-07-22",
+      "value": 7,
+      "previous_date": "2026-07-20",
+      "previous_value": 10
+    },
+    {
+      "zone_id": "DFcltLEKLxj",
+      "nom": "Aungba",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-07-22",
+      "value": 4,
+      "previous_date": "2026-07-20",
+      "previous_value": 6
+    },
+    {
+      "zone_id": "Uc3GqWS8C0w",
+      "nom": "Bambu",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-05-23",
+      "value": 0,
+      "previous_date": "2026-05-22",
+      "previous_value": 1
+    },
+    {
+      "zone_id": "Uc3GqWS8C0w",
+      "nom": "Bambu",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-05-25",
+      "value": 0,
+      "previous_date": "2026-05-24",
+      "previous_value": 2
+    },
+    {
+      "zone_id": "RjHZChl5gJQ",
+      "nom": "Mambasa",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-07-22",
+      "value": 7,
+      "previous_date": "2026-07-20",
+      "previous_value": 8
+    },
+    {
+      "zone_id": "nv8tx681Gjd",
+      "nom": "Mongbwalu",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-05-22",
+      "value": 10,
+      "previous_date": "2026-05-21",
+      "previous_value": 14
+    },
+    {
+      "zone_id": "mGTaa8TFifO",
+      "nom": "Nyankunde",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-05-22",
+      "value": 9,
+      "previous_date": "2026-05-21",
+      "previous_value": 11
+    },
+    {
+      "zone_id": "vPxN2nZnBXK",
+      "nom": "Rwampara",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-05-20",
+      "value": 24,
+      "previous_date": "2026-05-19",
+      "previous_value": 25
+    },
+    {
+      "zone_id": "vPxN2nZnBXK",
+      "nom": "Rwampara",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-06-16",
+      "value": 172,
+      "previous_date": "2026-06-15",
+      "previous_value": 192
+    },
+    {
+      "zone_id": "foR0DRLqtdJ",
+      "nom": "Butembo",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-05-23",
+      "value": 1,
+      "previous_date": "2026-05-22",
+      "previous_value": 2
+    },
+    {
+      "zone_id": "foR0DRLqtdJ",
+      "nom": "Butembo",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-06-01",
+      "value": 2,
+      "previous_date": "2026-05-30",
+      "previous_value": 5
+    },
+    {
+      "zone_id": "foR0DRLqtdJ",
+      "nom": "Butembo",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-06-11",
+      "value": 7,
+      "previous_date": "2026-06-10",
+      "previous_value": 9
+    },
+    {
+      "zone_id": "foR0DRLqtdJ",
+      "nom": "Butembo",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-08-02",
+      "value": 87,
+      "previous_date": "2026-08-01",
+      "previous_value": 88
+    },
+    {
+      "zone_id": "XoJ3dLz68aj",
+      "nom": "Kalunguta",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-05-28",
+      "value": 1,
+      "previous_date": "2026-05-27",
+      "previous_value": 2
+    },
+    {
+      "zone_id": "woJBeEpIZdy",
+      "nom": "Katwa",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-05-22",
+      "value": 0,
+      "previous_date": "2026-05-21",
+      "previous_value": 1
+    },
+    {
+      "zone_id": "woJBeEpIZdy",
+      "nom": "Katwa",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-06-11",
+      "value": 16,
+      "previous_date": "2026-06-10",
+      "previous_value": 18
+    },
+    {
+      "zone_id": "woJBeEpIZdy",
+      "nom": "Katwa",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-06-16",
+      "value": 23,
+      "previous_date": "2026-06-15",
+      "previous_value": 25
+    },
+    {
+      "zone_id": "zOOAshOz4Cz",
+      "nom": "Oicha",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-05-28",
+      "value": 1,
+      "previous_date": "2026-05-27",
+      "previous_value": 2
+    },
+    {
+      "zone_id": "t8tjGKVhkl3",
+      "nom": "Goma",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-07-03",
+      "value": 1,
+      "previous_date": "2026-07-02",
+      "previous_value": 2
+    },
+    {
+      "zone_id": "cXkCT53xxfk",
+      "nom": "Miti Murhesa",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-06-04",
+      "value": 1,
+      "previous_date": "2026-06-03",
+      "previous_value": 3
+    },
+    {
+      "zone_id": "cXkCT53xxfk",
+      "nom": "Miti Murhesa",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-06-08",
+      "value": 1,
+      "previous_date": "2026-06-07",
+      "previous_value": 3
+    },
+    {
+      "zone_id": "ZHIrX4z487c",
+      "nom": "Makiso Kisangani",
+      "metric": "cumulative_confirmed_cases",
+      "date": "2026-08-01",
+      "value": 3,
+      "previous_date": "2026-07-31",
+      "previous_value": 4
+    }
+  ],
+  "input_anomalies": [
+    {
+      "file": "insp_sitrep__cumulative_confirmed_cases.csv",
+      "line": 699,
+      "row": "NA,2026-06-18,17-",
+      "problem": "value \"17-\" is not a count",
+      "action": "treated as not reported"
+    },
+    {
+      "file": "insp_sitrep__cumulative_confirmed_cases.csv",
+      "line": 912,
+      "row": "Nyankunde,2026-06-25],93",
+      "problem": "date \"2026-06-25]\" is not ISO 8601",
+      "action": "row dropped"
+    },
+    {
+      "file": "insp_sitrep__cumulative_confirmed_deaths.csv",
+      "line": 244,
+      "row": "Jiba,2026-06-03,NA",
+      "problem": "value \"NA\" is not a count",
+      "action": "treated as not reported"
+    },
+    {
+      "file": "insp_sitrep__cumulative_confirmed_deaths.csv",
+      "line": 249,
+      "row": "Karisimbi,2026-06-03,NA",
+      "problem": "value \"NA\" is not a count",
+      "action": "treated as not reported"
+    },
+    {
+      "file": "insp_sitrep__cumulative_confirmed_deaths.csv",
+      "line": 831,
+      "row": "Drodro,2026-06-24,1]",
+      "problem": "value \"1]\" is not a count",
+      "action": "treated as not reported"
+    }
+  ],
+  "cross_checks": [
+    {
+      "country": "Democratic Republic of the Congo",
+      "metric": "confirmed_cases",
+      "hand_value": 10141,
+      "hand_as_of": "2026-10-26",
+      "inrb_value": 10141,
+      "result": "match"
+    },
+    {
+      "country": "Democratic Republic of the Congo",
+      "metric": "confirmed_deaths",
+      "hand_value": 4928,
+      "hand_as_of": "2026-10-26",
+      "inrb_value": 4928,
+      "result": "match"
+    }
+  ],
+  "notes": [
+    "Status uses the running maximum of each zone's cumulative confirmed series, so a revision never produces negative cases; the published value is shown on cards.",
+    "\"Cleared\" means no confirmed case for more than 42 days in this app's reading of the data. It is not an official end-of-outbreak declaration.",
+    "INSP carries a zone's previous cumulative value forward when the zone is not reported, so a flat series means no new cases reported, not confirmed zero.",
+    "Suspected cases are not shown: the zone-level series ends on 2026-05-30.",
+    "Province- and national-grain values in INRB's GeoJSON are ignored; every number comes from build/long/.",
+    "Basemap tiles, when a Mapbox token is configured, are loaded from Mapbox at view time (© Mapbox © OpenStreetMap)."
+  ]
+}
