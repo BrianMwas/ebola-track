@@ -101,6 +101,22 @@ Cloudflare Pages also works with the same files: build command
 `NEXT_PUBLIC_*` values are baked in at build time, so set the Mapbox token
 before building. Restrict it to the deployed hostname in your Mapbox account.
 
+## Daily data updates
+
+`.github/workflows/update-data.yml` runs every day at 05:17 UTC (and on
+demand from the Actions tab). It rebuilds `public/data/` from the latest INRB
+release, runs the typecheck and tests, and commits to `main` only if the data
+changed. Cloudflare then deploys the new commit.
+
+- A schema error or an unmatched zone name fails the run and commits nothing;
+  GitHub emails the repository owner.
+- If `main` is protected, allow `github-actions[bot]` to push, or the commit
+  step will fail.
+- `data/country-totals.json` (countries other than DRC, hotlines aside) is
+  still updated by hand.
+- The site is "updated daily from INRB releases", not real time: INRB
+  transcribes INSP bulletins, which lag by a day or more.
+
 ## Scripts
 
 | Script | What it does |

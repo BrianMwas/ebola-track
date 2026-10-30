@@ -178,11 +178,9 @@ export const en = {
     deathsDrc: "Confirmed deaths, DRC",
     new14: "New cases, last 14 days",
     activeZones: "Active health zones",
-    elsewhereCases(n: number, countries: number) {
-      return `Plus ${formatNumber(n)} in ${countries} other ${countries === 1 ? "country" : "countries"}`
-    },
-    elsewhereDeaths(n: number) {
-      return n === 0 ? "None reported elsewhere" : `Plus ${formatNumber(n)} in other countries`
+    /** Other countries are not added in: their figures have different dates and definitions. */
+    otherCountries(countries: number) {
+      return `DRC only. ${countries} other ${countries === 1 ? "country" : "countries"} in the table below`
     },
     new14Note(trend: "up" | "flat" | "down", previous: number) {
       const p = formatNumber(previous)
@@ -190,6 +188,8 @@ export const en = {
       if (trend === "down") return `DRC · down from ${p} in the 14 days before`
       return `DRC · about the same as the ${p} before`
     },
+    undercount:
+      "Confirmed cases only. People with suspected or probable Ebola, and people never tested, are not counted here, so the true numbers are higher.",
     casesContext(weeks: number) {
       return `Running total of health-zone cases over the last ${weeks} weeks`
     },
@@ -197,7 +197,7 @@ export const en = {
       return `${formatNumber(unlinked)} not linked to a health zone`
     },
     new14Context(weeks: number) {
-      return `New cases each week, last ${weeks} weeks`
+      return `New cases reported each week, last ${weeks} weeks`
     },
     activeContext: "Zones by weeks since their last case; coloured bars are active (21 days or less)",
     activeNote(tracked: number, provinces: number) {
@@ -231,7 +231,7 @@ export const en = {
   },
 
   weekly: {
-    title: "New cases each week, DRC",
+    title: "New cases reported each week, DRC",
     summary(latestWeek: number, weekEnd: string, last14: number, prev14: number) {
       const a = formatNumber(last14)
       const b = formatNumber(prev14)
@@ -251,7 +251,9 @@ export const en = {
     },
     recent: "Last 14 days",
     earlier: "Earlier weeks",
-    note: "Week ending on the date shown, by report date. Cases not assigned to a health zone are not included.",
+    note: "Week ending on the date shown. Cases not assigned to a health zone are not included.",
+    reportDate:
+      "Cases are counted on the day a bulletin reports them, not the day people fell ill. Bulletins sometimes arrive late or several at once, so a single week can jump up or down; the trend over several weeks is more reliable.",
   },
 
   provinces: {
@@ -331,15 +333,46 @@ export const en = {
         body: "Of anyone who is sick or has died from Ebola. Leave care and burials to trained teams.",
       },
     ],
-    hotlinesTitle: "Health hotlines",
-    // TODO_HEALTH_REVIEW: add each number from an official source.
+    hotlinesTitle: "Health hotlines (free to call)",
+    // Each number with where it was published. Re-check before launch; null = no official number found yet.
     hotlines: [
-      { country: "DRC", number: null },
-      { country: "Uganda", number: null },
-      { country: "Kenya", number: null },
-    ] as { country: string; number: string | null }[],
-    numberPending: "Number to be confirmed",
-    source: "From WHO and CDC guidance. Not yet reviewed by a health authority.",
+      {
+        country: "Uganda",
+        number: "0800 100 066",
+        extra: "or free SMS to 6767",
+        source_name: "Ministry of Health, Uganda",
+        source_url: "https://health.go.ug/",
+      },
+      {
+        country: "Kenya",
+        number: "719",
+        extra: "or dial *719#, WhatsApp 0700 719 719",
+        source_name: "Ministry of Health, via The Star, 7 Oct 2026",
+        source_url: "https://www.the-star.co.ke/news/2026-10-07-ebola-fears-call-these-government-hotlines",
+      },
+      {
+        country: "Tanzania",
+        number: "199",
+        extra: null,
+        source_name: "Travel Advisory No. 18, 17 Oct 2026, via The Citizen",
+        source_url:
+          "https://www.thecitizen.co.tz/tanzania/news/national/tanzania-tightens-ebola-screening-after-kenya-confirms-three-cases-5635806",
+      },
+      { country: "DRC", number: null, extra: null, source_name: null, source_url: null },
+    ] as {
+      country: string
+      number: string | null
+      extra: string | null
+      source_name: string | null
+      source_url: string | null
+    }[],
+    numberPending: "Not found yet: ask the nearest health facility",
+    hotlineSource: "Source",
+    source: "Steps based on WHO and CDC guidance. Not yet reviewed by a health authority.",
+    sourceLinks: [
+      { name: "WHO: Ebola disease", url: "https://www.who.int/news-room/fact-sheets/detail/ebola-disease" },
+      { name: "CDC: Ebola", url: "https://www.cdc.gov/ebola/" },
+    ],
   },
 
   exposure: {

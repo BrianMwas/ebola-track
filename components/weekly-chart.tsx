@@ -91,6 +91,7 @@ export function WeeklyChart({ weekly }: { weekly: Weekly }) {
           </span>
           <span>{en.weekly.note}</span>
         </figcaption>
+        <p className="pl-11 text-[15px] leading-relaxed text-ink-2">{en.weekly.reportDate}</p>
       </figure>
     </section>
   )
