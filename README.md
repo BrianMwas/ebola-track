@@ -88,6 +88,13 @@ With Workers Builds (Git integration), connect the repository and set:
 | Deploy command | `bunx wrangler deploy` |
 | Build variables | `BUN_VERSION=1.4.4`, `NODE_VERSION=22`, and `NEXT_PUBLIC_MAPBOX_TOKEN` if you use Mapbox |
 
+**Set `BUN_VERSION=1.4.4`.** Cloudflare's build image defaults to an older
+Bun (1.2.x), and `bun.lock` was written by Bun 1.4 with fields older versions
+may not read, so the install step can fail without it. Keep it in step with
+the Bun you use locally (`bun --version`). The Worker name in the dashboard
+must match `name` in `wrangler.jsonc` (`ebola-track`), or the deploy step
+fails.
+
 Cloudflare Pages also works with the same files: build command
 `bun run build`, output directory `out`, and the same variables.
 

@@ -9,6 +9,8 @@ import { formatDate, formatShortDate } from "@/lib/format"
 import { addDays, localIsoDate } from "@/lib/status"
 import { en } from "@/lib/strings"
 import { cn } from "@/lib/utils"
+import { useToday } from "@/lib/use-today"
+import { Calendar } from "@/components/calendar/calendar"
 
 type Mode = "contact" | "sick"
 type Result = {
@@ -22,6 +24,12 @@ type Result = {
 }
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/
+
+/** A YYYY-MM-DD date as local midnight, for the calendar. */
+const fromIso = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number)
+  return new Date(y!, m! - 1, d!)
+}
 
 function result(mode: Mode, date: string, today: string): Result | null {
   if (mode === "contact") {
@@ -55,9 +63,11 @@ function result(mode: Mode, date: string, today: string): Result | null {
 export function ExposureWindow() {
   const [mode, setMode] = React.useState<Mode>("contact")
   const [dates, setDates] = React.useState<Record<Mode, string>>({ contact: "", sick: "" })
-  const inputId = React.useId()
-  const today = localIsoDate(new Date())
+  const labelId = React.useId()
+  const todayDate = useToday()
+  const today = localIsoDate(todayDate ?? new Date())
   const date = dates[mode]
+  const picked = ISO.test(date) ? fromIso(date) : undefined
   const valid = ISO.test(date)
   const r = valid ? result(mode, date, today) : null
 
@@ -96,17 +106,18 @@ export function ExposureWindow() {
         ))}
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor={inputId} className="text-[15px] font-semibold">
+      <div role="group" aria-labelledby={labelId} className="flex flex-col gap-2">
+        <p id={labelId} className="text-[15px] font-semibold">
           {mode === "contact" ? en.exposure.contactDate : en.exposure.onsetDate}
-        </label>
-        <input
-          id={inputId}
-          type="date"
-          value={date}
-          max={today}
-          onChange={(e) => setDates((d) => ({ ...d, [mode]: e.target.value }))}
-          className="min-h-11 rounded border border-input bg-background px-3 text-base text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+        </p>
+        {/* One calendar per mode keeps each mode's month and selection. Future days are blocked. */}
+        <Calendar
+          key={mode}
+          value={picked}
+          onChange={(d) => setDates((all) => ({ ...all, [mode]: localIsoDate(d) }))}
+          maxDate={todayDate}
+          locale="en-GB"
+          showToday
         />
       </div>
 
