@@ -9,8 +9,7 @@ export const en = {
   appName: "East Africa Ebola status",
   appTagline: "Bundibugyo virus outbreak, 2026",
   /** Required on every page (hard rule 2 of the brief); shown under the page title. */
-  disclaimer:
-    "Unofficial awareness tool. Data is preliminary and likely undercounts. Not medical advice. For symptoms or exposure, call your national health hotline.",
+  disclaimer: "Unofficial and preliminary. Not medical advice.",
   privatePreview: "Private preview",
   loading: "Loading data",
   loadError: "Data could not be loaded",
@@ -65,8 +64,7 @@ export const en = {
   freshness(asOf: string) {
     return `Data as of ${formatDate(asOf)} · updated daily`
   },
-  freshnessStale:
-    "These figures are more than 2 days old. Newer bulletins may exist.",
+  freshnessStale: "Over 2 days old. Newer bulletins may exist.",
 
   map: {
     label: "Map of Ebola status by health zone",
@@ -215,12 +213,12 @@ export const en = {
     noCasesLine(country: string, date: string) {
       return `${country}: no confirmed cases (${formatShortDate(date)})`
     },
-    detailHint: "Select a country for its situation and source.",
+    tip: "Select a country for details",
   },
 
   mapSection: {
     title: "Where cases are",
-    subtitle: "Select a health zone for its trend.",
+    tip: "Select a zone for its trend",
     search: "Find a health zone",
     legendActive: "Active, 0–21 days",
     legendWatch: "Watch, 22–42",
@@ -306,14 +304,14 @@ export const en = {
     note: "Weekly bars are scaled to each zone's own peak; the last two weeks are blue.",
   },
 
+  help(section: string) {
+    return `About ${section}`
+  },
+
   about: {
     title: "About these numbers",
     undercount:
       "Confirmed cases only. Suspected, probable and untested cases are not counted, so the true numbers are higher.",
-    reporting: "How weekly cases are counted",
-    mapColours: "What the map colours mean",
-    otherCountries: "Cases outside the DRC",
-    unlinkedDeaths: "Deaths with no health zone",
     sources: "Sources",
     release(tag: string, checked: string) {
       return `INRB release ${tag}, checked ${checked}.`
@@ -374,9 +372,10 @@ export const en = {
       source_name: string | null
       source_url: string | null
     }[],
-    numberPending: "Not found yet: ask the nearest health facility",
-    hotlineSource: "Source",
+    numberPending: "Ask the nearest health facility",
+    hotlineSources: "Where these numbers come from",
     source: "Steps based on WHO and CDC guidance. Not yet reviewed by a health authority.",
+    notReviewed: "Not yet reviewed by a health authority.",
     sourceLinks: [
       { name: "WHO: Ebola disease", url: "https://www.who.int/news-room/fact-sheets/detail/ebola-disease" },
       { name: "CDC: Ebola", url: "https://www.cdc.gov/ebola/" },

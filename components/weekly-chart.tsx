@@ -29,7 +29,18 @@ export function WeeklyChart({ weekly }: { weekly: Weekly }) {
       id="weekly"
       className={cn("flex scroll-mt-4 flex-col gap-3", !seen && "reveal-wait")} aria-labelledby="weekly-title">
       <div className="flex flex-col gap-0.5">
-        <SectionTitle id="weekly-title">{en.weekly.title}</SectionTitle>
+        <SectionTitle
+          id="weekly-title"
+          helpLabel={en.help(en.weekly.title)}
+          help={
+            <>
+              <p>{en.weekly.reportDate}</p>
+              <p>{en.weekly.note}</p>
+            </>
+          }
+        >
+          {en.weekly.title}
+        </SectionTitle>
         <p className="text-[15px] text-ink-2">
           {en.weekly.summary(values[n - 1] ?? 0, weekly.week_ends[n - 1])}
         </p>

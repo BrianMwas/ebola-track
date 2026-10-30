@@ -8,6 +8,7 @@ import type { Trend } from "@/lib/status"
 import { en } from "@/lib/strings"
 import { StatusMark } from "@/components/status-mark"
 import { TrendArrow } from "@/components/trend-arrow"
+import { Tip } from "@/components/ui/info-tip"
 import { SectionTitle } from "@/components/ui/section-title"
 import { SortableDataTable, type DataColumn } from "@/components/sortable-data-table/sortable-data-table"
 
@@ -109,7 +110,16 @@ export function CountryTable({
 
   return (
     <section id="countries" className="flex scroll-mt-4 flex-col gap-3" aria-labelledby="countries-title">
-      <SectionTitle id="countries-title">{en.countries.title}</SectionTitle>
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+        <SectionTitle
+          id="countries-title"
+          helpLabel={en.help(en.countries.title)}
+          help={<p>{en.countries.note}</p>}
+        >
+          {en.countries.title}
+        </SectionTitle>
+        <Tip>{en.countries.tip}</Tip>
+      </div>
       <SortableDataTable
         rows={rows}
         columns={columns}

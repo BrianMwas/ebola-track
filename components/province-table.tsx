@@ -4,6 +4,7 @@ import * as React from "react"
 
 import type { ProvinceRow } from "@/lib/chart-data"
 import { formatNumber } from "@/lib/format"
+import type { CountrySummary } from "@/lib/schema"
 import { en } from "@/lib/strings"
 import { useInViewOnce } from "@/lib/use-media-query"
 import { cn } from "@/lib/utils"
@@ -11,8 +12,13 @@ import { SectionTitle } from "@/components/ui/section-title"
 import { StatusMark } from "@/components/status-mark"
 import { SortableDataTable, type DataColumn } from "@/components/sortable-data-table/sortable-data-table"
 
-/** DRC provinces with cases: active zones and new cases, scannable. Unlinked deaths are explained in About these numbers. */
-export function ProvinceTable({ rows }: { rows: ProvinceRow[] }) {
+/** DRC provinces with cases: active zones and new cases. Its "?" explains deaths with no health zone. */
+export function ProvinceTable({ rows, drc }: { rows: ProvinceRow[]; drc: CountrySummary | undefined }) {
+  const z = drc?.zones
+  const unlinked =
+    z && z.unassigned_deaths > 0
+      ? en.drc.unassignedDeathsExplain(z.unassigned_deaths, z.zone_sum_deaths + z.unassigned_deaths, z.unassigned_as_of)
+      : null
   const maxNew = Math.max(1, ...rows.map((r) => r.new_14d))
   const [ref, seen] = useInViewOnce<HTMLElement>()
 
@@ -62,7 +68,13 @@ export function ProvinceTable({ rows }: { rows: ProvinceRow[] }) {
       className={cn("flex scroll-mt-4 flex-col gap-3", !seen && "reveal-wait")}
       aria-labelledby="prov-title"
     >
-      <SectionTitle id="prov-title">{en.provinces.title}</SectionTitle>
+      <SectionTitle
+        id="prov-title"
+        helpLabel={en.help(en.provinces.title)}
+        help={unlinked ? <p>{unlinked}</p> : undefined}
+      >
+        {en.provinces.title}
+      </SectionTitle>
       <SortableDataTable
         rows={rows}
         columns={columns}

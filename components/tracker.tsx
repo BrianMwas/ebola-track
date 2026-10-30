@@ -11,6 +11,7 @@ import { useIsDesktop } from "@/lib/use-media-query"
 import { useSnapshot, type Snapshot } from "@/lib/use-snapshot"
 import { Card, CardTitle } from "@/components/ui/card"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
+import { Tip } from "@/components/ui/info-tip"
 import { SectionTitle } from "@/components/ui/section-title"
 import { AboutData } from "@/components/about-data"
 import { CountryPanel } from "@/components/country-panel"
@@ -112,9 +113,20 @@ function TrackerView({ data }: { data: Snapshot }) {
           />
 
           <section id="map" className="flex scroll-mt-4 flex-col gap-3" aria-labelledby="map-title">
-            <div className="flex flex-col gap-0.5">
-              <SectionTitle id="map-title">{en.mapSection.title}</SectionTitle>
-              <p className="text-[15px] text-ink-2">{en.mapSection.subtitle}</p>
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+              <SectionTitle
+                id="map-title"
+                helpLabel={en.help(en.mapSection.title)}
+                help={
+                  <>
+                    <p>{en.map.legendExplain}</p>
+                    <p>{en.mapSection.note}</p>
+                  </>
+                }
+              >
+                {en.mapSection.title}
+              </SectionTitle>
+              <Tip>{en.mapSection.tip}</Tip>
             </div>
             <ZoneMap
               zones={zones}
@@ -146,7 +158,7 @@ function TrackerView({ data }: { data: Snapshot }) {
 
           <WeeklyChart weekly={weekly} />
 
-          <ProvinceTable rows={provinces} />
+          <ProvinceTable rows={provinces} drc={drc} />
 
           <ZoneTable
             zones={ranked}
@@ -161,7 +173,7 @@ function TrackerView({ data }: { data: Snapshot }) {
         >
           <Guide />
           <ExposureWindow />
-          <AboutData latest={latest} drc={drc} />
+          <AboutData latest={latest} />
         </aside>
       </div>
 

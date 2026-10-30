@@ -135,7 +135,11 @@ export function ZoneTable({
       aria-labelledby="zones-title"
     >
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <SectionTitle id="zones-title">
+        <SectionTitle
+          id="zones-title"
+          helpLabel={en.help(en.zoneTable.title)}
+          help={<p>{en.zoneTable.note}</p>}
+        >
           {all || filtering ? en.zoneTable.title : en.zoneTable.titleTop}
         </SectionTitle>
         {zones.length > TOP && !filtering && (
