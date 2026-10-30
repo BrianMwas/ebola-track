@@ -21,8 +21,6 @@ export function WeeklyChart({ weekly }: { weekly: Weekly }) {
   const ticks = [1, 0.75, 0.5, 0.25].map((f) => top * f)
   const peak = Math.max(...values)
   const peakEnd = weekly.week_ends[values.indexOf(peak)]
-  const last14 = (values[n - 1] ?? 0) + (values[n - 2] ?? 0)
-  const prev14 = (values[n - 3] ?? 0) + (values[n - 4] ?? 0)
 
   const [ref, seen] = useInViewOnce<HTMLElement>()
   return (
@@ -33,7 +31,7 @@ export function WeeklyChart({ weekly }: { weekly: Weekly }) {
       <div className="flex flex-col gap-0.5">
         <SectionTitle id="weekly-title">{en.weekly.title}</SectionTitle>
         <p className="text-[15px] text-ink-2">
-          {en.weekly.summary(values[n - 1] ?? 0, weekly.week_ends[n - 1], last14, prev14)}
+          {en.weekly.summary(values[n - 1] ?? 0, weekly.week_ends[n - 1])}
         </p>
       </div>
       <figure className="flex flex-col gap-1.5">
@@ -89,9 +87,7 @@ export function WeeklyChart({ weekly }: { weekly: Weekly }) {
             <span aria-hidden className="size-2.5 bg-chart-1" />
             {en.weekly.earlier}
           </span>
-          <span>{en.weekly.note}</span>
         </figcaption>
-        <p className="pl-11 text-[15px] leading-relaxed text-ink-2">{en.weekly.reportDate}</p>
       </figure>
     </section>
   )

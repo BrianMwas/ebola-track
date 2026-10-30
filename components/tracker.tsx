@@ -12,6 +12,7 @@ import { useSnapshot, type Snapshot } from "@/lib/use-snapshot"
 import { Card, CardTitle } from "@/components/ui/card"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { SectionTitle } from "@/components/ui/section-title"
+import { AboutData } from "@/components/about-data"
 import { CountryPanel } from "@/components/country-panel"
 import { CountryTable } from "@/components/country-table"
 import { ExposureWindow } from "@/components/exposure-window"
@@ -141,12 +142,11 @@ function TrackerView({ data }: { data: Snapshot }) {
                 ) : null
               }
             />
-            <p className="text-[13px] text-muted-foreground">{en.mapSection.note}</p>
           </section>
 
           <WeeklyChart weekly={weekly} />
 
-          {drc && <ProvinceTable rows={provinces} drc={drc} />}
+          <ProvinceTable rows={provinces} />
 
           <ZoneTable
             zones={ranked}
@@ -161,6 +161,7 @@ function TrackerView({ data }: { data: Snapshot }) {
         >
           <Guide />
           <ExposureWindow />
+          <AboutData latest={latest} drc={drc} />
         </aside>
       </div>
 

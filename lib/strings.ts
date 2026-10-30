@@ -62,8 +62,8 @@ export const en = {
     return `${formatNumber(newCases)} new confirmed in the last 14 days (${formatNumber(previous)} in the 14 days before).`
   },
 
-  freshness(asOf: string, tag: string, checked: string) {
-    return `Data as of ${formatDate(asOf)} · INRB release ${tag} · checked ${checked}`
+  freshness(asOf: string) {
+    return `Data as of ${formatDate(asOf)} · updated daily`
   },
   freshnessStale:
     "These figures are more than 2 days old. Newer bulletins may exist.",
@@ -178,30 +178,18 @@ export const en = {
     deathsDrc: "Confirmed deaths, DRC",
     new14: "New cases, last 14 days",
     activeZones: "Active health zones",
-    /** Other countries are not added in: their figures have different dates and definitions. */
-    otherCountries(countries: number) {
-      return `DRC only. ${countries} other ${countries === 1 ? "country" : "countries"} in the table below`
-    },
     new14Note(trend: "up" | "flat" | "down", previous: number) {
       const p = formatNumber(previous)
       if (trend === "up") return `DRC · up from ${p} in the 14 days before`
       if (trend === "down") return `DRC · down from ${p} in the 14 days before`
       return `DRC · about the same as the ${p} before`
     },
-    undercount:
-      "Confirmed cases only. People with suspected or probable Ebola, and people never tested, are not counted here, so the true numbers are higher.",
-    casesContext(weeks: number) {
-      return `Running total of health-zone cases over the last ${weeks} weeks`
-    },
-    deathsContext(unlinked: number) {
-      return `${formatNumber(unlinked)} not linked to a health zone`
-    },
     new14Context(weeks: number) {
       return `New cases reported each week, last ${weeks} weeks`
     },
     activeContext: "Zones by weeks since their last case; coloured bars are active (21 days or less)",
     activeNote(tracked: number, provinces: number) {
-      return `Of ${tracked} in the reports, across ${provinces} ${provinces === 1 ? "province" : "provinces"}`
+      return `of ${tracked} in the reports, in ${provinces} ${provinces === 1 ? "province" : "provinces"}`
     },
   },
 
@@ -209,6 +197,13 @@ export const en = {
     title: "Cases by country",
     country: "Country",
     situation: "Situation",
+    statusLabel: {
+      local_transmission: "Spreading locally",
+      outbreak_over: "Outbreak over",
+      imported_cluster: "Imported cluster",
+      imported: "Imported case",
+      medevac: "Medevac",
+    } as Record<string, string>,
     cases: "Confirmed cases",
     deaths: "Deaths",
     new14: "New, 14 days",
@@ -217,11 +212,15 @@ export const en = {
     dateNotGiven: "Date not given",
     note: "Imported and medevac cases are counted where they were confirmed and kept apart from local transmission.",
     noCases: "No confirmed cases reported",
+    noCasesLine(country: string, date: string) {
+      return `${country}: no confirmed cases (${formatShortDate(date)})`
+    },
+    detailHint: "Select a country for its situation and source.",
   },
 
   mapSection: {
     title: "Where cases are",
-    subtitle: "Health zones coloured by days since the last confirmed case. Select a zone for its trend.",
+    subtitle: "Select a health zone for its trend.",
     search: "Find a health zone",
     legendActive: "Active, 0–21 days",
     legendWatch: "Watch, 22–42",
@@ -232,16 +231,9 @@ export const en = {
 
   weekly: {
     title: "New cases reported each week, DRC",
-    summary(latestWeek: number, weekEnd: string, last14: number, prev14: number) {
-      const a = formatNumber(last14)
-      const b = formatNumber(prev14)
-      const compare =
-        Math.abs(last14 - prev14) <= 0.1 * Math.max(last14, prev14)
-          ? "about the same as"
-          : last14 > prev14
-            ? "more than"
-            : "fewer than"
-      return `${formatNumber(latestWeek)} new confirmed cases in the week to ${formatShortDate(weekEnd)}. The last 14 days (${a}) are ${compare} the 14 before (${b}).`
+    /** The 14-day comparison is in the headline band, so the chart only names its latest week. */
+    summary(latestWeek: number, weekEnd: string) {
+      return `${formatNumber(latestWeek)} new confirmed cases in the week to ${formatShortDate(weekEnd)}.`
     },
     chartLabel(weeks: number, peak: number, peakEnd: string, latest: number) {
       return `Weekly new confirmed cases in the DRC by report date, ${weeks} weeks. Peak of ${formatNumber(peak)} in the week to ${formatShortDate(peakEnd)}; ${formatNumber(latest)} in the latest week.`
@@ -260,6 +252,7 @@ export const en = {
     title: "DRC by province",
     province: "Province",
     zones: "Health zones",
+    activeZones: "Active zones",
     share: "Share of new cases",
     unlinked: "Not linked to a health zone",
     casesShort(n: number) {
@@ -282,6 +275,7 @@ export const en = {
 
   zoneTable: {
     title: "Health zones",
+    titleTop: "Health zones with the most new cases",
     sortHint: "Most new cases first. Select a column heading to sort.",
     filters: "Filter health zones",
     search: "Search",
@@ -310,6 +304,20 @@ export const en = {
       return `Weekly new cases, last ${values.length} weeks: ${values.join(", ")}`
     },
     note: "Weekly bars are scaled to each zone's own peak; the last two weeks are blue.",
+  },
+
+  about: {
+    title: "About these numbers",
+    undercount:
+      "Confirmed cases only. Suspected, probable and untested cases are not counted, so the true numbers are higher.",
+    reporting: "How weekly cases are counted",
+    mapColours: "What the map colours mean",
+    otherCountries: "Cases outside the DRC",
+    unlinkedDeaths: "Deaths with no health zone",
+    sources: "Sources",
+    release(tag: string, checked: string) {
+      return `INRB release ${tag}, checked ${checked}.`
+    },
   },
 
   // TODO_HEALTH_REVIEW: this guidance must be checked by a health authority before launch.

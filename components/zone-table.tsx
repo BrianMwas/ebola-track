@@ -42,7 +42,7 @@ function bySort(sort: SortState) {
 }
 
 /**
- * Tracked health zones: search, status and province filters above a sortable
+ * Tracked health zones: search (zone or province) and status filters above a sortable
  * table with a 12-week sparkline each. Selecting a zone opens it on the map.
  */
 export function ZoneTable({
@@ -58,25 +58,18 @@ export function ZoneTable({
   const [sort, setSort] = React.useState<SortState>(DEFAULT_SORT)
   const [query, setQuery] = React.useState("")
   const [status, setStatus] = React.useState<ZoneStatus | null>(null)
-  const [province, setProvince] = React.useState("")
   const [ref, seen] = useInViewOnce<HTMLElement>()
   const searchId = React.useId()
-  const provinceId = React.useId()
 
-  const provinces = React.useMemo(
-    () => [...new Set(zones.map((z) => z.province))].sort((a, b) => a.localeCompare(b)),
-    [zones]
-  )
-  const filtering = query.trim() !== "" || status !== null || province !== ""
+  const filtering = query.trim() !== "" || status !== null
   const matches = React.useMemo(() => {
     const q = fold(query.trim())
     return zones.filter(
       (z) =>
         (!q || fold(z.nom).includes(q) || fold(z.province).includes(q)) &&
-        (status === null || z.status === status) &&
-        (!province || z.province === province)
+        (status === null || z.status === status)
     )
-  }, [zones, query, status, province])
+  }, [zones, query, status])
   // Filters show every match; otherwise the top 10 until "See all".
   const rows = React.useMemo(
     () => (all || filtering ? matches : [...matches].sort(bySort(sort)).slice(0, TOP)),
@@ -85,7 +78,6 @@ export function ZoneTable({
   const clear = () => {
     setQuery("")
     setStatus(null)
-    setProvince("")
   }
 
   const columns = React.useMemo<DataColumn<ZoneProperties>[]>(
@@ -111,21 +103,11 @@ export function ZoneTable({
       {
         key: "new_14d",
         label: en.countries.new14,
-        render: (v) => <span className="font-bold">{formatNumber(v as number)}</span>,
-      },
-      {
-        key: "prev_14d",
-        label: en.zoneTable.prev,
-        render: (v) => <span className="text-ink-2">{formatNumber(v as number)}</span>,
-      },
-      {
-        key: "trend",
-        label: en.zoneTable.trend,
-        sortable: false,
-        render: (_, z) => (
-          <span className="inline-flex items-center gap-1 text-sm">
+        render: (v, z) => (
+          <span className="inline-flex items-center gap-1 font-bold">
+            {formatNumber(v as number)}
             <TrendArrow trend={z.trend} size={15} />
-            {en.trendLabel[z.trend]}
+            <span className="sr-only">{en.trendLabel[z.trend]}</span>
           </span>
         ),
       },
@@ -138,6 +120,7 @@ export function ZoneTable({
       {
         key: "confirmed_cases",
         label: en.zoneTable.total,
+        phone: false,
         render: (v) => <span className="text-ink-2">{formatNumber(v as number)}</span>,
       },
     ],
@@ -152,10 +135,9 @@ export function ZoneTable({
       aria-labelledby="zones-title"
     >
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <div className="flex flex-col gap-0.5">
-          <SectionTitle id="zones-title">{en.zoneTable.title}</SectionTitle>
-          <p className="text-[15px] text-ink-2">{en.zoneTable.sortHint}</p>
-        </div>
+        <SectionTitle id="zones-title">
+          {all || filtering ? en.zoneTable.title : en.zoneTable.titleTop}
+        </SectionTitle>
         {zones.length > TOP && !filtering && (
           <button
             type="button"
@@ -214,26 +196,8 @@ export function ZoneTable({
             ))}
           </div>
         </div>
-        <div className="flex flex-col gap-1">
-          <label htmlFor={provinceId} className="text-[13px] font-semibold text-ink-2">
-            {en.provinces.province}
-          </label>
-          <select
-            id={provinceId}
-            value={province}
-            onChange={(e) => setProvince(e.target.value)}
-            className="min-h-10 rounded-lg border border-input bg-background px-2.5 text-[15px] text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-          >
-            <option value="">{en.zoneTable.allProvinces}</option>
-            {provinces.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
-        </div>
         <p aria-live="polite" className="flex min-h-10 items-center gap-3 text-sm text-ink-2">
-          {en.zoneTable.count(rows.length, zones.length)}
+          {filtering && en.zoneTable.count(rows.length, zones.length)}
           {filtering && (
             <button type="button" onClick={clear} className="font-semibold text-link hover:text-link-hover">
               {en.zoneTable.clear}
@@ -251,7 +215,6 @@ export function ZoneTable({
         defaultSort={DEFAULT_SORT}
         onSortChange={setSort}
       />
-      <p className="text-[13px] text-muted-foreground">{en.zoneTable.note}</p>
     </section>
   )
 }

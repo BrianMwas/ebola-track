@@ -74,7 +74,7 @@ export function ExposureWindow() {
   return (
     <section
       id="exposure"
-      className="flex scroll-mt-4 flex-col gap-3.5 rounded-lg border border-control p-5"
+      className="flex scroll-mt-4 flex-col gap-3.5 rounded-lg border p-5"
       aria-labelledby="exposure-title"
     >
       <div className="flex flex-col gap-0.5">
