@@ -1,6 +1,16 @@
 "use client"
 
 import * as React from "react"
+import { ArrowDown01Icon, ArrowUp01Icon, ArrowUpDownIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnDef,
+  type SortingState,
+} from "@tanstack/react-table"
 
 import { formatNumber } from "@/lib/format"
 import type { Weekly, ZoneProperties } from "@/lib/schema"
@@ -10,35 +20,134 @@ import { cn } from "@/lib/utils"
 import { StatusMark } from "@/components/status-mark"
 import { TrendArrow } from "@/components/trend-arrow"
 import { SectionTitle } from "@/components/ui/section-title"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 const TOP = 10
 const SPARK_WEEKS = 12
 
-/** Health zones by new cases, with a 12-week sparkline each. Selecting a zone opens it on the map. */
+type Meta = { align?: "right"; rowHeader?: boolean }
+
+/**
+ * Data table of tracked health zones: sortable columns, the top 10 by default,
+ * a 12-week sparkline each. Selecting a zone opens it on the map.
+ */
 export function ZoneTable({
   zones,
   weekly,
   selectedId,
   onSelect,
 }: {
-  /** Tracked zones, already ordered. */
   zones: ZoneProperties[]
   weekly: Weekly
   selectedId: string | null
   onSelect: (id: string) => void
 }) {
   const [all, setAll] = React.useState(false)
+  const [sorting, setSorting] = React.useState<SortingState>([{ id: "new_14d", desc: true }])
   const [ref, seen] = useInViewOnce<HTMLElement>()
-  const shown = all ? zones : zones.slice(0, TOP)
-  const th = "px-3 py-2 font-semibold"
-  const td = "px-3 py-2.5"
+
+  const columns = React.useMemo<ColumnDef<ZoneProperties>[]>(
+    () => [
+      {
+        id: "nom",
+        accessorKey: "nom",
+        header: en.zoneTable.zone,
+        sortingFn: (a, b) => a.original.nom.localeCompare(b.original.nom),
+        meta: { rowHeader: true } satisfies Meta,
+        cell: ({ row: { original: z } }) => (
+          <span className="flex items-center gap-2">
+            <StatusMark status={z.status} />
+            <span className="sr-only">{en.status[z.status]}:</span>
+            <button
+              type="button"
+              onClick={() => onSelect(z.id)}
+              aria-pressed={z.id === selectedId}
+              className="min-h-8 text-left font-semibold hover:text-link focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            >
+              {z.nom}
+            </button>
+            <span className="text-[13px] font-normal text-muted-foreground">{z.province}</span>
+          </span>
+        ),
+      },
+      {
+        id: "new_14d",
+        accessorKey: "new_14d",
+        header: en.countries.new14,
+        sortDescFirst: true,
+        meta: { align: "right" } satisfies Meta,
+        cell: ({ getValue }) => <span className="font-bold">{formatNumber(getValue<number>())}</span>,
+      },
+      {
+        id: "prev_14d",
+        accessorKey: "prev_14d",
+        header: en.zoneTable.prev,
+        sortDescFirst: true,
+        meta: { align: "right" } satisfies Meta,
+        cell: ({ getValue }) => <span className="text-ink-2">{formatNumber(getValue<number>())}</span>,
+      },
+      {
+        id: "trend",
+        header: en.zoneTable.trend,
+        enableSorting: false,
+        cell: ({ row: { original: z } }) => (
+          <span className="inline-flex items-center gap-1 text-sm">
+            <TrendArrow trend={z.trend} size={15} />
+            {en.trendLabel[z.trend]}
+          </span>
+        ),
+      },
+      {
+        id: "weekly",
+        header: en.zoneTable.weekly,
+        enableSorting: false,
+        cell: ({ row: { original: z } }) => <Sparkline values={(weekly.zones[z.id] ?? []).slice(-SPARK_WEEKS)} />,
+      },
+      {
+        id: "confirmed_cases",
+        accessorKey: "confirmed_cases",
+        header: en.zoneTable.total,
+        sortDescFirst: true,
+        meta: { align: "right" } satisfies Meta,
+        cell: ({ getValue }) => <span className="text-ink-2">{formatNumber(getValue<number>())}</span>,
+      },
+    ],
+    [weekly, selectedId, onSelect]
+  )
+
+  // TanStack Table returns a new object each render, so the React Compiler skips this component; that is fine here.
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const table = useReactTable({
+    data: zones,
+    columns,
+    state: { sorting },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getRowId: (z) => z.id,
+  })
+  const rows = table.getRowModel().rows
+  const shown = all ? rows : rows.slice(0, TOP)
+
   return (
     <section
       ref={ref}
       id="zones"
-      className={cn("flex scroll-mt-4 flex-col gap-3", !seen && "reveal-wait")} aria-labelledby="zones-title">
+      className={cn("flex scroll-mt-4 flex-col gap-3", !seen && "reveal-wait")}
+      aria-labelledby="zones-title"
+    >
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <SectionTitle id="zones-title">{en.zoneTable.title}</SectionTitle>
+        <div className="flex flex-col gap-0.5">
+          <SectionTitle id="zones-title">{en.zoneTable.title}</SectionTitle>
+          <p className="text-[15px] text-ink-2">{en.zoneTable.sortHint}</p>
+        </div>
         {zones.length > TOP && (
           <button
             type="button"
@@ -50,73 +159,85 @@ export function ZoneTable({
           </button>
         )}
       </div>
-      <div className="relative overflow-x-auto">
-        <table className="w-full min-w-[720px] border-collapse text-[15px]">
-          <thead>
-            <tr className="border-b border-b-rule text-left text-[13px] text-ink-2">
-              <th scope="col" className={`${th} pl-0`}>{en.zoneTable.zone}</th>
-              <th scope="col" className={`${th} text-right`}>{en.countries.new14}</th>
-              <th scope="col" className={`${th} text-right`}>{en.zoneTable.prev}</th>
-              <th scope="col" className={th}>{en.zoneTable.trend}</th>
-              <th scope="col" className={th}>{en.zoneTable.weekly}</th>
-              <th scope="col" className={`${th} pr-0 text-right`}>{en.zoneTable.total}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {shown.map((z) => {
-              const spark = (weekly.zones[z.id] ?? []).slice(-SPARK_WEEKS)
-              const peak = Math.max(1, ...spark)
-              return (
-                <tr key={z.id} className={z.id === selectedId ? "border-b bg-accent" : "border-b"}>
-                  <th scope="row" className="py-2.5 pr-3 text-left font-normal">
-                    <span className="flex items-center gap-2">
-                      <StatusMark status={z.status} />
-                      <span className="sr-only">{en.status[z.status]}:</span>
+      <Table className="min-w-[720px]">
+        <TableHeader>
+          {table.getHeaderGroups().map((group) => (
+            <TableRow key={group.id}>
+              {group.headers.map((header) => {
+                const meta = header.column.columnDef.meta as Meta | undefined
+                const sorted = header.column.getIsSorted()
+                const label = flexRender(header.column.columnDef.header, header.getContext())
+                return (
+                  <TableHead
+                    key={header.id}
+                    aria-sort={sorted === "asc" ? "ascending" : sorted === "desc" ? "descending" : undefined}
+                    className={meta?.align === "right" ? "text-right" : undefined}
+                  >
+                    {header.column.getCanSort() ? (
                       <button
                         type="button"
-                        onClick={() => onSelect(z.id)}
-                        aria-pressed={z.id === selectedId}
-                        className="min-h-8 text-left font-semibold hover:text-link focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                        onClick={header.column.getToggleSortingHandler()}
+                        className={cn(
+                          "inline-flex min-h-8 items-center gap-1 rounded hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+                          sorted && "text-foreground",
+                          meta?.align === "right" && "flex-row-reverse"
+                        )}
                       >
-                        {z.nom}
-                      </button>
-                      <span className="text-[13px] text-muted-foreground">{z.province}</span>
-                    </span>
-                  </th>
-                  <td className={`${td} text-right font-bold`}>{formatNumber(z.new_14d)}</td>
-                  <td className={`${td} text-right text-ink-2`}>{formatNumber(z.prev_14d)}</td>
-                  <td className={td}>
-                    <span className="inline-flex items-center gap-1 text-sm">
-                      <TrendArrow trend={z.trend} size={15} />
-                      {en.trendLabel[z.trend]}
-                    </span>
-                  </td>
-                  <td className={td}>
-                    <span
-                      role="img"
-                      aria-label={en.zoneTable.sparkLabel(spark)}
-                      className="flex h-6.5 w-30 items-end gap-0.5"
-                    >
-                      {spark.map((v, i) => (
-                        <span
-                          key={i}
-                          className={`flex-1 origin-bottom motion-safe:animate-grow-up ${i >= spark.length - 2 ? "bg-chart-2" : "bg-chart-1"}`}
-                          style={{
-                            height: `${Math.max(v ? 8 : 4, (v / peak) * 100)}%`,
-                            animationDelay: `${i * 30}ms`,
-                          }}
+                        {label}
+                        <HugeiconsIcon
+                          icon={sorted === "asc" ? ArrowUp01Icon : sorted === "desc" ? ArrowDown01Icon : ArrowUpDownIcon}
+                          size={14}
+                          strokeWidth={2}
+                          className={sorted ? undefined : "opacity-50"}
+                          aria-hidden
                         />
-                      ))}
-                    </span>
-                  </td>
-                  <td className="py-2.5 pl-3 text-right text-ink-2">{formatNumber(z.confirmed_cases)}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
+                      </button>
+                    ) : (
+                      <span className="inline-flex min-h-8 items-center">{label}</span>
+                    )}
+                  </TableHead>
+                )
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {shown.map((row) => (
+            <TableRow key={row.id} data-state={row.id === selectedId ? "selected" : undefined}>
+              {row.getVisibleCells().map((cell) => {
+                const meta = cell.column.columnDef.meta as Meta | undefined
+                const content = flexRender(cell.column.columnDef.cell, cell.getContext())
+                return meta?.rowHeader ? (
+                  <th key={cell.id} scope="row" className="py-2.5 pr-3 text-left align-middle font-normal">
+                    {content}
+                  </th>
+                ) : (
+                  <TableCell key={cell.id} className={meta?.align === "right" ? "text-right" : undefined}>
+                    {content}
+                  </TableCell>
+                )
+              })}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
       <p className="text-[13px] text-muted-foreground">{en.zoneTable.note}</p>
     </section>
+  )
+}
+
+/** Weekly new cases, scaled to the zone's own peak; the last two weeks in blue. */
+function Sparkline({ values }: { values: number[] }) {
+  const peak = Math.max(1, ...values)
+  return (
+    <span role="img" aria-label={en.zoneTable.sparkLabel(values)} className="flex h-6.5 w-30 items-end gap-0.5">
+      {values.map((v, i) => (
+        <span
+          key={i}
+          className={`flex-1 origin-bottom motion-safe:animate-grow-up ${i >= values.length - 2 ? "bg-chart-2" : "bg-chart-1"}`}
+          style={{ height: `${Math.max(v ? 8 : 4, (v / peak) * 100)}%`, animationDelay: `${i * 30}ms` }}
+        />
+      ))}
+    </span>
   )
 }

@@ -253,7 +253,8 @@ export const en = {
   },
 
   zoneTable: {
-    title: "Health zones with the most new cases",
+    title: "Health zones",
+    sortHint: "Most new cases first. Select a column heading to sort.",
     zone: "Health zone",
     prev: "14 days before",
     trend: "Trend",
