@@ -312,8 +312,9 @@ th[data-sorted] .sortHint {
     flex: none;
   }
 
-  .table thead th:not([data-sortable]) {
-    display: none;
+  .table thead th:not([data-sortable]),
+  .table [data-phone-hide] {
+    display: none !important;
   }
 
   [data-numeric] .sortInner {

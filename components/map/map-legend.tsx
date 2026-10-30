@@ -60,7 +60,7 @@ export function MapLegend({
             className="size-3 rounded-[2px] ring-1 ring-[#b7c2cf] ring-inset"
             style={{
               backgroundColor: "#eef2f7",
-              backgroundImage: "repeating-linear-gradient(135deg, #44546a 0 1.5px, transparent 1.5px 4px)",
+              backgroundImage: "repeating-linear-gradient(135deg, #44546a 0 1.5px, transparent 1.5px 4px)", /* taste-skill-ignore: hatch is the map's own stale-data mark, not a gradient fill */
             }}
           />
           {en.map.legendStale}

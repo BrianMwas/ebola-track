@@ -2,30 +2,27 @@
 
 import * as React from "react"
 
-import { formatNumber, formatShortDate } from "@/lib/format"
+import { formatNumber } from "@/lib/format"
 import type { CountrySummary, Summary } from "@/lib/schema"
 import type { Trend } from "@/lib/status"
 import { en } from "@/lib/strings"
 import { StatusMark } from "@/components/status-mark"
 import { TrendArrow } from "@/components/trend-arrow"
+import { Tip } from "@/components/ui/info-tip"
 import { SectionTitle } from "@/components/ui/section-title"
 import { SortableDataTable, type DataColumn } from "@/components/sortable-data-table/sortable-data-table"
 
 type Row = {
   iso3: string
   country: string
-  situation: string
   classification: CountrySummary["classification"]
   confirmed_cases: number
   confirmed_deaths: number
   /** From the zone data, so the DRC only; null elsewhere (sorts last). */
   new_14d: number | null
-  as_of: string | null
-  source_name: string
-  source_url: string
 }
 
-/** Cases by country, largest first. The first thing on the page. */
+/** Cases by country, largest first. Situation and source open in the side panel. */
 export function CountryTable({
   countries,
   noCases,
@@ -43,14 +40,10 @@ export function CountryTable({
       countries.map((c) => ({
         iso3: c.iso3,
         country: c.country,
-        situation: c.situation,
         classification: c.classification,
         confirmed_cases: c.confirmed_cases,
         confirmed_deaths: c.confirmed_deaths,
         new_14d: c.iso3 === "COD" && drcNew ? drcNew.value : null,
-        as_of: c.as_of,
-        source_name: c.source_name,
-        source_url: c.source_url,
       })),
     [countries, drcNew]
   )
@@ -64,27 +57,21 @@ export function CountryTable({
           <button
             type="button"
             onClick={() => onSelect(r.iso3)}
-            className="min-h-8 text-left font-bold hover:text-link focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            className="inline-flex min-h-8 items-center gap-2 text-left font-bold hover:text-link focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
+            <SituationMark classification={r.classification} />
             {r.country}
           </button>
         ),
       },
       {
-        key: "situation",
-        label: en.countries.situation,
+        key: "classification",
+        label: en.zoneTable.status,
         sortable: false,
-        width: "30%",
+        phone: false,
         render: (_, r) => (
-          <span
-            className={
-              r.classification === "outbreak_over"
-                ? "inline-flex items-center gap-2 text-ink-2"
-                : "inline-flex items-center gap-2"
-            }
-          >
-            <SituationMark classification={r.classification} />
-            {r.situation}
+          <span className="whitespace-nowrap text-ink-2">
+            {en.countries.statusLabel[r.classification] ?? r.classification}
           </span>
         ),
       },
@@ -96,7 +83,8 @@ export function CountryTable({
       {
         key: "confirmed_deaths",
         label: en.countries.deaths,
-        render: (v) => formatNumber(v as number),
+        phone: false,
+        render: (v) => <span className="text-ink-2">{formatNumber(v as number)}</span>,
       },
       {
         key: "new_14d",
@@ -104,7 +92,10 @@ export function CountryTable({
         numeric: true,
         render: (v) =>
           v === null || !drcNew ? (
-            <span className="text-muted-foreground">{en.countries.notReported}</span>
+            <span className="text-muted-foreground">
+              <span aria-hidden>—</span>
+              <span className="sr-only">{en.countries.notReported}</span>
+            </span>
           ) : (
             <span className="inline-flex items-center gap-1 font-semibold">
               {formatNumber(v as number)}
@@ -113,25 +104,22 @@ export function CountryTable({
             </span>
           ),
       },
-      {
-        key: "as_of",
-        label: en.countries.asOf,
-        render: (_, r) => (
-          <span className="text-[13px] text-muted-foreground">
-            {r.as_of ? formatShortDate(r.as_of) : en.countries.dateNotGiven} ·{" "}
-            <a href={r.source_url} target="_blank" rel="noreferrer">
-              {r.source_name}
-            </a>
-          </span>
-        ),
-      },
     ],
     [drcNew, onSelect]
   )
 
   return (
     <section id="countries" className="flex scroll-mt-4 flex-col gap-3" aria-labelledby="countries-title">
-      <SectionTitle id="countries-title">{en.countries.title}</SectionTitle>
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+        <SectionTitle
+          id="countries-title"
+          helpLabel={en.help(en.countries.title)}
+          help={<p>{en.countries.note}</p>}
+        >
+          {en.countries.title}
+        </SectionTitle>
+        <Tip>{en.countries.tip}</Tip>
+      </div>
       <SortableDataTable
         rows={rows}
         columns={columns}
@@ -140,26 +128,17 @@ export function CountryTable({
         defaultSort={{ key: "confirmed_cases", direction: "desc" }}
       />
       {noCases.length > 0 && (
-        <div className="flex flex-col gap-1 border-b pb-3 text-[15px]">
-          <h3 className="text-[13px] font-semibold text-ink-2">{en.countries.noCases}</h3>
-          <ul className="flex flex-col gap-1">
-            {noCases.map((c) => (
-              <li key={c.iso3}>
-                <strong className="font-bold">{c.country}</strong>
-                <span className="text-ink-2"> · {c.note}</span>{" "}
-                <span className="text-[13px] whitespace-nowrap text-muted-foreground">
-                  ({formatShortDate(c.as_of)} ·{" "}
-                  <a href={c.source_url} target="_blank" rel="noreferrer">
-                    {c.source_name}
-                  </a>
-                  )
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <p className="text-[15px] text-ink-2">
+          {noCases.map((c, i) => (
+            <React.Fragment key={c.iso3}>
+              {i > 0 && " · "}
+              <a href={c.source_url} target="_blank" rel="noreferrer" title={c.note}>
+                {en.countries.noCasesLine(c.country, c.as_of)}
+              </a>
+            </React.Fragment>
+          ))}
+        </p>
       )}
-      <p className="text-[13px] text-muted-foreground">{en.countries.note}</p>
     </section>
   )
 }

@@ -8,6 +8,7 @@ import { contactWindow, infectionWindow, INCUBATION_MAX_DAYS, INCUBATION_MIN_DAY
 import { formatDate, formatShortDate } from "@/lib/format"
 import { addDays, localIsoDate } from "@/lib/status"
 import { en } from "@/lib/strings"
+import { InfoTip } from "@/components/ui/info-tip"
 import { cn } from "@/lib/utils"
 import { useToday } from "@/lib/use-today"
 import { Calendar } from "@/components/calendar/calendar"
@@ -74,17 +75,22 @@ export function ExposureWindow() {
   return (
     <section
       id="exposure"
-      className="flex scroll-mt-4 flex-col gap-3.5 rounded-lg border border-control p-5"
+      className="flex scroll-mt-4 flex-col gap-3.5 rounded-lg border p-5"
       aria-labelledby="exposure-title"
     >
       <div className="flex flex-col gap-0.5">
-        <h2
-          id="exposure-title"
-          className="flex items-center gap-2 font-heading text-[22px] leading-tight font-bold tracking-[-0.01em]"
-        >
-          <HugeiconsIcon icon={Calendar03Icon} size={22} className="text-link" aria-hidden />
-          {en.exposure.title}
-        </h2>
+        <div className="flex items-center gap-1">
+          <h2
+            id="exposure-title"
+            className="flex items-center gap-2 font-heading text-[22px] leading-tight font-bold tracking-[-0.01em]"
+          >
+            <HugeiconsIcon icon={Calendar03Icon} size={22} className="text-link" aria-hidden />
+            {en.exposure.title}
+          </h2>
+          <InfoTip label={en.help(en.exposure.title)}>
+            <p>{en.exposure.method}</p>
+          </InfoTip>
+        </div>
         <p className="text-sm text-muted-foreground">{en.exposure.subtitle}</p>
       </div>
 
@@ -156,7 +162,6 @@ export function ExposureWindow() {
           </div>
         )}
       </div>
-      <p className="text-[13px] leading-relaxed text-muted-foreground">{en.exposure.method}</p>
     </section>
   )
 }

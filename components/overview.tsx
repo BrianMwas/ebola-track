@@ -1,8 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { InformationCircleIcon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
 
 import { provinceRows, trackedZones } from "@/lib/chart-data"
 import type { Latest, Summary, Weekly, Zones } from "@/lib/schema"
@@ -35,7 +33,7 @@ export function Overview({
       <div className="flex flex-col gap-1.5">
         <h1
           id="page-title"
-          className="font-heading text-[28px] leading-tight font-bold tracking-[-0.025em] sm:text-[40px]"
+          className="font-heading text-[26px] leading-tight font-bold tracking-[-0.025em] sm:text-[32px]"
         >
           {en.overview.title}
         </h1>
@@ -48,17 +46,12 @@ export function Overview({
       <div style={{ "--stats-ink": STATUS_COLORS.active } as React.CSSProperties}>
         <StatsBand stats={stats} layout="divided" locale="en" />
       </div>
-      <p className="flex items-start gap-2 text-[15px] leading-relaxed text-ink-2">
-        <HugeiconsIcon icon={InformationCircleIcon} size={18} className="mt-0.5 shrink-0" aria-hidden />
-        {en.overview.undercount}
-      </p>
     </section>
   )
 }
 
 function headlineStats(summary: Summary, zones: Zones, weekly: Weekly): Stat[] {
   const drc = summary.countries.find((c) => c.iso3 === "COD")
-  const others = summary.countries.filter((c) => c.iso3 !== "COD")
   const tracked = trackedZones(zones)
   const new14 = tracked.reduce((s, z) => s + z.new_14d, 0)
   const prev14 = tracked.reduce((s, z) => s + z.prev_14d, 0)
@@ -83,15 +76,11 @@ function headlineStats(summary: Summary, zones: Zones, weekly: Weekly): Stat[] {
       {
         label: en.overview.casesDrc,
         value: drc.confirmed_cases,
-        detail: en.overview.otherCountries(others.length),
-        context: en.overview.casesContext(weekly.zone_total.length),
         visual: { kind: "trend", values: cumulative },
       },
       {
         label: en.overview.deathsDrc,
         value: drc.confirmed_deaths,
-        detail: en.overview.otherCountries(others.length),
-        context: drc.zones ? en.overview.deathsContext(Math.max(0, drc.zones.unassigned_deaths)) : undefined,
       }
     )
   }
