@@ -18,8 +18,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableRowHead,
 } from "@/components/ui/table"
+import * as ts from "@/components/table-styles"
 import { STATUS_COLORS } from "@/components/map/map-style"
 
 /** DRC provinces with cases, with one mark per health zone and the unassigned gap shown openly. */
@@ -35,15 +35,15 @@ export function ProvinceTable({ rows, drc }: { rows: ProvinceRow[]; drc: Country
       aria-labelledby="prov-title"
     >
       <SectionTitle id="prov-title">{en.provinces.title}</SectionTitle>
-      <Table className="min-w-[680px]">
+      <Table className={cn(ts.table, "min-w-[680px]")}>
         <TableHeader>
-          <TableRow>
-            <TableHead>{en.provinces.province}</TableHead>
-            <TableHead>{en.provinces.zones}</TableHead>
-            <TableHead className="text-right">{en.countries.cases}</TableHead>
-            <TableHead className="text-right">{en.countries.deaths}</TableHead>
-            <TableHead className="text-right">{en.countries.new14}</TableHead>
-            <TableHead className="w-1/5">
+          <TableRow className={ts.headRow}>
+            <TableHead className={ts.th}>{en.provinces.province}</TableHead>
+            <TableHead className={ts.th}>{en.provinces.zones}</TableHead>
+            <TableHead className={cn(ts.th, "text-right")}>{en.countries.cases}</TableHead>
+            <TableHead className={cn(ts.th, "text-right")}>{en.countries.deaths}</TableHead>
+            <TableHead className={cn(ts.th, "text-right")}>{en.countries.new14}</TableHead>
+            <TableHead className={cn(ts.th, "w-1/5")}>
               <span className="sr-only">{en.provinces.share}</span>
             </TableHead>
           </TableRow>
@@ -51,8 +51,8 @@ export function ProvinceTable({ rows, drc }: { rows: ProvinceRow[]; drc: Country
         <TableBody>
           {rows.map((r) => (
             <TableRow key={r.province}>
-              <TableRowHead>{r.province}</TableRowHead>
-              <TableCell>
+              <TableHead scope="row" className={ts.rowHead}>{r.province}</TableHead>
+              <TableCell className={ts.td}>
                 <span className="inline-flex items-center gap-2">
                   <span
                     role="img"
@@ -74,10 +74,10 @@ export function ProvinceTable({ rows, drc }: { rows: ProvinceRow[]; drc: Country
                   </span>
                 </span>
               </TableCell>
-              <TableCell className="text-right font-semibold">{formatNumber(r.confirmed_cases)}</TableCell>
-              <TableCell className="text-right">{formatNumber(r.confirmed_deaths)}</TableCell>
-              <TableCell className="text-right font-semibold">{formatNumber(r.new_14d)}</TableCell>
-              <TableCell>
+              <TableCell className={cn(ts.td, "text-right font-semibold")}>{formatNumber(r.confirmed_cases)}</TableCell>
+              <TableCell className={cn(ts.td, "text-right")}>{formatNumber(r.confirmed_deaths)}</TableCell>
+              <TableCell className={cn(ts.td, "text-right font-semibold")}>{formatNumber(r.new_14d)}</TableCell>
+              <TableCell className={ts.td}>
                 <span
                   aria-hidden
                   className="block h-2.5 origin-left bg-chart-2 motion-safe:animate-grow-right"
@@ -88,25 +88,25 @@ export function ProvinceTable({ rows, drc }: { rows: ProvinceRow[]; drc: Country
           ))}
           {z && (
             <TableRow className="text-ink-2">
-              <TableRowHead className="font-medium">{en.provinces.unlinked}</TableRowHead>
-              <TableCell />
-              <TableCell className="text-right">{formatNumber(Math.max(0, z.unassigned_cases))}</TableCell>
-              <TableCell className="text-right">{formatNumber(Math.max(0, z.unassigned_deaths))}</TableCell>
-              <TableCell />
-              <TableCell />
+              <TableHead scope="row" className={cn(ts.rowHead, "font-medium")}>{en.provinces.unlinked}</TableHead>
+              <TableCell className={ts.td} />
+              <TableCell className={cn(ts.td, "text-right")}>{formatNumber(Math.max(0, z.unassigned_cases))}</TableCell>
+              <TableCell className={cn(ts.td, "text-right")}>{formatNumber(Math.max(0, z.unassigned_deaths))}</TableCell>
+              <TableCell className={ts.td} />
+              <TableCell className={ts.td} />
             </TableRow>
           )}
         </TableBody>
-        <TableFooter>
+        <TableFooter className="border-t-rule bg-transparent font-bold">
           <TableRow className="hover:bg-transparent">
-            <TableRowHead className="font-bold">{en.provinces.total}</TableRowHead>
-            <TableCell className="text-[13px] font-medium text-ink-2">
+            <TableHead scope="row" className={cn(ts.rowHead, "font-bold")}>{en.provinces.total}</TableHead>
+            <TableCell className={cn(ts.td, "text-[13px] font-medium text-ink-2")}>
               {z && en.provinces.zoneCounts(z.by_status.active, z.by_status.watch, z.by_status.cleared)}
             </TableCell>
-            <TableCell className="text-right">{formatNumber(drc.confirmed_cases)}</TableCell>
-            <TableCell className="text-right">{formatNumber(drc.confirmed_deaths)}</TableCell>
-            <TableCell className="text-right">{formatNumber(rows.reduce((s, r) => s + r.new_14d, 0))}</TableCell>
-            <TableCell />
+            <TableCell className={cn(ts.td, "text-right")}>{formatNumber(drc.confirmed_cases)}</TableCell>
+            <TableCell className={cn(ts.td, "text-right")}>{formatNumber(drc.confirmed_deaths)}</TableCell>
+            <TableCell className={cn(ts.td, "text-right")}>{formatNumber(rows.reduce((s, r) => s + r.new_14d, 0))}</TableCell>
+            <TableCell className={ts.td} />
           </TableRow>
         </TableFooter>
       </Table>

@@ -1,19 +1,28 @@
 "use client"
 
 import * as React from "react"
-import { ArrowDown01Icon, ArrowUp01Icon, ArrowUpDownIcon } from "@hugeicons/core-free-icons"
+import {
+  ArrowDown01Icon,
+  ArrowUp01Icon,
+  ArrowUpDownIcon,
+  Search01Icon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
+  type ColumnFiltersState,
+  type FilterFn,
   type ColumnDef,
   type SortingState,
 } from "@tanstack/react-table"
 
 import { formatNumber } from "@/lib/format"
 import type { Weekly, ZoneProperties } from "@/lib/schema"
+import type { ZoneStatus } from "@/lib/status"
 import { en } from "@/lib/strings"
 import { useInViewOnce } from "@/lib/use-media-query"
 import { cn } from "@/lib/utils"
@@ -28,11 +37,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import * as ts from "@/components/table-styles"
 
 const TOP = 10
 const SPARK_WEEKS = 12
 
 type Meta = { align?: "right"; rowHeader?: boolean }
+
+const STATUSES: ZoneStatus[] = ["active", "watch", "cleared", "never"]
+
+/** Matches the zone or province name, ignoring case and accents. */
+const fold = (text: string) => text.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase()
+const nameOrProvince: FilterFn<ZoneProperties> = (row, _columnId, query: string) => {
+  const q = fold(query.trim())
+  return !q || fold(row.original.nom).includes(q) || fold(row.original.province).includes(q)
+}
 
 /**
  * Data table of tracked health zones: sortable columns, the top 10 by default,
@@ -51,6 +70,14 @@ export function ZoneTable({
 }) {
   const [all, setAll] = React.useState(false)
   const [sorting, setSorting] = React.useState<SortingState>([{ id: "new_14d", desc: true }])
+  const [query, setQuery] = React.useState("")
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const searchId = React.useId()
+  const provinceId = React.useId()
+  const provinces = React.useMemo(
+    () => [...new Set(zones.map((z) => z.province))].sort((a, b) => a.localeCompare(b)),
+    [zones]
+  )
   const [ref, seen] = useInViewOnce<HTMLElement>()
 
   const columns = React.useMemo<ColumnDef<ZoneProperties>[]>(
@@ -118,6 +145,9 @@ export function ZoneTable({
         meta: { align: "right" } satisfies Meta,
         cell: ({ getValue }) => <span className="text-ink-2">{formatNumber(getValue<number>())}</span>,
       },
+      // Filter-only columns, never shown.
+      { id: "status", accessorKey: "status", filterFn: "equals" },
+      { id: "province", accessorKey: "province", filterFn: "equals" },
     ],
     [weekly, selectedId, onSelect]
   )
@@ -127,14 +157,31 @@ export function ZoneTable({
   const table = useReactTable({
     data: zones,
     columns,
-    state: { sorting },
+    state: {
+      sorting,
+      globalFilter: query,
+      columnFilters,
+      columnVisibility: { status: false, province: false },
+    },
     onSortingChange: setSorting,
+    onGlobalFilterChange: setQuery,
+    onColumnFiltersChange: setColumnFilters,
+    globalFilterFn: nameOrProvince,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getRowId: (z) => z.id,
   })
   const rows = table.getRowModel().rows
-  const shown = all ? rows : rows.slice(0, TOP)
+  const filtering = query.trim() !== "" || columnFilters.length > 0
+  // Filters show every match; otherwise the top 10 until "See all".
+  const shown = all || filtering ? rows : rows.slice(0, TOP)
+  const statusFilter = (table.getColumn("status")?.getFilterValue() as ZoneStatus | undefined) ?? null
+  const provinceFilter = (table.getColumn("province")?.getFilterValue() as string | undefined) ?? ""
+  const clear = () => {
+    setQuery("")
+    setColumnFilters([])
+  }
 
   return (
     <section
@@ -148,7 +195,7 @@ export function ZoneTable({
           <SectionTitle id="zones-title">{en.zoneTable.title}</SectionTitle>
           <p className="text-[15px] text-ink-2">{en.zoneTable.sortHint}</p>
         </div>
-        {zones.length > TOP && (
+        {zones.length > TOP && !filtering && (
           <button
             type="button"
             onClick={() => setAll((v) => !v)}
@@ -159,10 +206,79 @@ export function ZoneTable({
           </button>
         )}
       </div>
-      <Table className="min-w-[720px]">
+      <div role="search" aria-label={en.zoneTable.filters} className="flex flex-wrap items-end gap-x-4 gap-y-3">
+        <div className="flex w-full flex-col gap-1 sm:w-64">
+          <label htmlFor={searchId} className="text-[13px] font-semibold text-ink-2">
+            {en.zoneTable.search}
+          </label>
+          <div className="flex min-h-10 items-center gap-2 rounded border border-input px-2.5 text-muted-foreground focus-within:ring-2 focus-within:ring-ring">
+            <HugeiconsIcon icon={Search01Icon} size={18} aria-hidden />
+            <input
+              id={searchId}
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={en.zoneTable.searchPlaceholder}
+              className="min-w-0 flex-1 bg-transparent text-[15px] text-foreground outline-none"
+            />
+          </div>
+        </div>
+        <div className="flex flex-col gap-1">
+          <span id={`${searchId}-status`} className="text-[13px] font-semibold text-ink-2">
+            {en.zoneTable.status}
+          </span>
+          <div role="group" aria-labelledby={`${searchId}-status`} className="flex flex-wrap overflow-hidden rounded border border-control">
+            {[null, ...STATUSES].map((st, i) => (
+              <button
+                key={st ?? "all"}
+                type="button"
+                aria-pressed={statusFilter === st}
+                onClick={() => table.getColumn("status")?.setFilterValue(st ?? undefined)}
+                className={cn(
+                  "inline-flex min-h-10 items-center gap-1.5 px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+                  i > 0 && "border-l border-control",
+                  statusFilter === st
+                    ? "bg-primary font-semibold text-primary-foreground"
+                    : "bg-background font-medium text-foreground hover:bg-muted"
+                )}
+              >
+                {st && <StatusMark status={st} />}
+                {st ? en.zoneTable.statusShort[st] : en.zoneTable.all}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor={provinceId} className="text-[13px] font-semibold text-ink-2">
+            {en.provinces.province}
+          </label>
+          <select
+            id={provinceId}
+            value={provinceFilter}
+            onChange={(e) => table.getColumn("province")?.setFilterValue(e.target.value || undefined)}
+            className="min-h-10 rounded border border-input bg-background px-2.5 text-[15px] text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          >
+            <option value="">{en.zoneTable.allProvinces}</option>
+            {provinces.map((p) => (
+              <option key={p} value={p}>
+                {p}
+              </option>
+            ))}
+          </select>
+        </div>
+        <p aria-live="polite" className="flex min-h-10 items-center gap-3 text-sm text-ink-2">
+          {en.zoneTable.count(filtering ? rows.length : shown.length, zones.length)}
+          {filtering && (
+            <button type="button" onClick={clear} className="font-semibold text-link hover:text-link-hover">
+              {en.zoneTable.clear}
+            </button>
+          )}
+        </p>
+      </div>
+      <Table className={cn(ts.table, "min-w-[720px]")}>
         <TableHeader>
           {table.getHeaderGroups().map((group) => (
-            <TableRow key={group.id}>
+            <TableRow key={group.id} className={ts.headRow}>
               {group.headers.map((header) => {
                 const meta = header.column.columnDef.meta as Meta | undefined
                 const sorted = header.column.getIsSorted()
@@ -171,7 +287,7 @@ export function ZoneTable({
                   <TableHead
                     key={header.id}
                     aria-sort={sorted === "asc" ? "ascending" : sorted === "desc" ? "descending" : undefined}
-                    className={meta?.align === "right" ? "text-right" : undefined}
+                    className={cn(ts.th, meta?.align === "right" && "text-right")}
                   >
                     {header.column.getCanSort() ? (
                       <button
@@ -202,17 +318,24 @@ export function ZoneTable({
           ))}
         </TableHeader>
         <TableBody>
+          {shown.length === 0 && (
+            <TableRow className="hover:bg-transparent">
+              <TableCell colSpan={table.getVisibleLeafColumns().length} className="py-8 text-center text-ink-2">
+                {en.zoneTable.noMatch}
+              </TableCell>
+            </TableRow>
+          )}
           {shown.map((row) => (
             <TableRow key={row.id} data-state={row.id === selectedId ? "selected" : undefined}>
               {row.getVisibleCells().map((cell) => {
                 const meta = cell.column.columnDef.meta as Meta | undefined
                 const content = flexRender(cell.column.columnDef.cell, cell.getContext())
                 return meta?.rowHeader ? (
-                  <th key={cell.id} scope="row" className="py-2.5 pr-3 text-left align-middle font-normal">
+                  <TableHead key={cell.id} scope="row" className={cn(ts.rowHead, "font-normal")}>
                     {content}
-                  </th>
+                  </TableHead>
                 ) : (
-                  <TableCell key={cell.id} className={meta?.align === "right" ? "text-right" : undefined}>
+                  <TableCell key={cell.id} className={cn(ts.td, meta?.align === "right" && "text-right")}>
                     {content}
                   </TableCell>
                 )

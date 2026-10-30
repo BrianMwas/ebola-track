@@ -255,6 +255,18 @@ export const en = {
   zoneTable: {
     title: "Health zones",
     sortHint: "Most new cases first. Select a column heading to sort.",
+    filters: "Filter health zones",
+    search: "Search",
+    searchPlaceholder: "Zone or province",
+    status: "Status",
+    all: "All",
+    statusShort: { active: "Active", watch: "Watch", cleared: "Cleared", never: "No cases" } satisfies Record<ZoneStatus, string>,
+    allProvinces: "All provinces",
+    count(shown: number, total: number) {
+      return `Showing ${shown} of ${total}`
+    },
+    clear: "Clear filters",
+    noMatch: "No health zones match these filters.",
     zone: "Health zone",
     prev: "14 days before",
     trend: "Trend",

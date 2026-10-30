@@ -4,6 +4,7 @@ import { formatNumber, formatShortDate } from "@/lib/format"
 import type { CountrySummary } from "@/lib/schema"
 import type { Trend } from "@/lib/status"
 import { en } from "@/lib/strings"
+import { cn } from "@/lib/utils"
 import { StatusMark } from "@/components/status-mark"
 import { TrendArrow } from "@/components/trend-arrow"
 import { SectionTitle } from "@/components/ui/section-title"
@@ -14,8 +15,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableRowHead,
 } from "@/components/ui/table"
+import * as ts from "@/components/table-styles"
 
 /** Cases by country, largest first. The first thing on the page. */
 export function CountryTable({
@@ -32,15 +33,15 @@ export function CountryTable({
   return (
     <section id="countries" className="flex scroll-mt-4 flex-col gap-3" aria-labelledby="countries-title">
       <SectionTitle id="countries-title">{en.countries.title}</SectionTitle>
-      <Table className="min-w-[720px]">
+      <Table className={cn(ts.table, "min-w-[720px]")}>
         <TableHeader>
-          <TableRow>
-            <TableHead>{en.countries.country}</TableHead>
-            <TableHead>{en.countries.situation}</TableHead>
-            <TableHead className="text-right">{en.countries.cases}</TableHead>
-            <TableHead className="text-right">{en.countries.deaths}</TableHead>
-            <TableHead className="text-right">{en.countries.new14}</TableHead>
-            <TableHead>{en.countries.asOf}</TableHead>
+          <TableRow className={ts.headRow}>
+            <TableHead className={ts.th}>{en.countries.country}</TableHead>
+            <TableHead className={ts.th}>{en.countries.situation}</TableHead>
+            <TableHead className={cn(ts.th, "text-right")}>{en.countries.cases}</TableHead>
+            <TableHead className={cn(ts.th, "text-right")}>{en.countries.deaths}</TableHead>
+            <TableHead className={cn(ts.th, "text-right")}>{en.countries.new14}</TableHead>
+            <TableHead className={ts.th}>{en.countries.asOf}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -48,7 +49,7 @@ export function CountryTable({
             const isDrc = c.iso3 === "COD"
             return (
               <TableRow key={c.iso3} className={isDrc ? "bg-muted/60" : undefined}>
-                <TableRowHead className="py-3.5 font-bold">
+                <TableHead scope="row" className={cn(ts.rowHead, "py-3.5 font-bold")}>
                   <button
                     type="button"
                     onClick={() => onSelect(c.iso3)}
@@ -56,20 +57,20 @@ export function CountryTable({
                   >
                     {c.country}
                   </button>
-                </TableRowHead>
-                <TableCell className={c.classification === "outbreak_over" ? "py-3.5 text-ink-2" : "py-3.5"}>
+                </TableHead>
+                <TableCell className={cn(ts.td, "py-3.5 whitespace-normal", c.classification === "outbreak_over" && "text-ink-2")}>
                   <span className="inline-flex items-center gap-2">
                     <SituationMark classification={c.classification} />
                     {c.situation}
                   </span>
                 </TableCell>
                 <TableCell
-                  className={isDrc ? "py-3.5 text-right text-[17px] font-bold" : "py-3.5 text-right font-semibold"}
+                  className={cn(ts.td, isDrc ? "py-3.5 text-right text-[17px] font-bold" : "py-3.5 text-right font-semibold")}
                 >
                   {formatNumber(c.confirmed_cases)}
                 </TableCell>
-                <TableCell className="py-3.5 text-right">{formatNumber(c.confirmed_deaths)}</TableCell>
-                <TableCell className="py-3.5 text-right">
+                <TableCell className={cn(ts.td, "py-3.5 text-right")}>{formatNumber(c.confirmed_deaths)}</TableCell>
+                <TableCell className={cn(ts.td, "py-3.5 text-right")}>
                   {isDrc && drcNew ? (
                     <span className="inline-flex items-center gap-1 font-semibold">
                       {formatNumber(drcNew.value)}
@@ -80,7 +81,7 @@ export function CountryTable({
                     <span className="text-muted-foreground">{en.countries.notReported}</span>
                   )}
                 </TableCell>
-                <TableCell className="py-3.5 text-[13px] text-muted-foreground">
+                <TableCell className={cn(ts.td, "py-3.5 text-[13px] whitespace-normal text-muted-foreground")}>
                   {c.as_of ? formatShortDate(c.as_of) : en.countries.dateNotGiven} ·{" "}
                   <a href={c.source_url} target="_blank" rel="noreferrer">
                     {c.source_name}
