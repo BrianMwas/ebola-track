@@ -81,7 +81,7 @@ requests.
 ## Layout
 
 ```
-app/                    page and layout (banner on every page)
+app/                    page and layout (disclaimer under the page title)
 components/             tracker, panels, charts, map (components/map/)
 lib/                    schema, status, INRB parsing, formatting, strings
 scripts/                build-snapshot.ts, copy-vendor.ts

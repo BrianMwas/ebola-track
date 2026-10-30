@@ -3,7 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 
 import { en } from "@/lib/strings"
 
-/** "What should I do?": numbered steps and hotlines. Sun yellow is kept for this and the banner. */
+/** "What should I do?": numbered steps and hotlines. Sun yellow is kept for this block. */
 export function Guide() {
   return (
     <section

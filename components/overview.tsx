@@ -40,6 +40,9 @@ export function Overview({
           {en.overview.title}
         </h1>
         <FreshnessLine latest={latest} />
+        <p role="note" className="text-[13px] text-muted-foreground">
+          {en.disclaimer}
+        </p>
       </div>
       <dl ref={ref} className="grid grid-cols-2 border-t-2 border-t-rule sm:grid-cols-4 sm:border-b">
         {drc && (

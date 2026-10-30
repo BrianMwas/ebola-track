@@ -8,7 +8,8 @@ import type { ZoneStatus } from "./status"
 export const en = {
   appName: "East Africa Ebola status",
   appTagline: "Bundibugyo virus outbreak, 2026",
-  banner:
+  /** Required on every page (hard rule 2 of the brief); shown under the page title. */
+  disclaimer:
     "Unofficial awareness tool. Data is preliminary and likely undercounts. Not medical advice. For symptoms or exposure, call your national health hotline.",
   privatePreview: "Private preview",
   loading: "Loading data",

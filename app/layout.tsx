@@ -3,7 +3,6 @@ import { Geist, Geist_Mono, DM_Sans } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { SiteBanner } from "@/components/site-banner"
 import { en } from "@/lib/strings"
 import { cn } from "@/lib/utils";
 
@@ -37,7 +36,6 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider>
-          <SiteBanner />
           {children}
         </ThemeProvider>
       </body>
