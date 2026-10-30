@@ -33,30 +33,6 @@ export function usePrefersReducedMotion(): boolean {
 }
 
 /**
- * Counts from 0 up to `target` once `start` is true, easing out over `duration` ms.
- * Returns the target straight away when motion is reduced.
- */
-export function useCountUp(target: number, start = true, duration = 900): number {
-  const reduced = usePrefersReducedMotion()
-  const [value, setValue] = React.useState(0)
-
-  React.useEffect(() => {
-    if (reduced || !start) return
-    let frame = 0
-    const t0 = performance.now()
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - t0) / duration)
-      setValue(Math.round(target * (1 - (1 - t) ** 3)))
-      if (t < 1) frame = requestAnimationFrame(tick)
-    }
-    frame = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(frame)
-  }, [target, duration, reduced, start])
-
-  return reduced ? target : value
-}
-
-/**
  * True once the element has been at least a quarter on screen; it then stays
  * true. Reveals wait for this so they play where someone can see them.
  */

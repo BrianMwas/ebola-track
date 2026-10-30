@@ -113,6 +113,14 @@ export const en = {
 
   zone: {
     cumulative: "Confirmed cases",
+    new14: "New cases, 14 days",
+    new14Context(previous: number) {
+      return `${formatNumber(previous)} in the 14 days before`
+    },
+    lastCaseOn(date: string) {
+      return `Last new case ${date}`
+    },
+    deathsContext: "Confirmed, as reported for this zone",
     deaths: "Confirmed deaths",
     lastCase: "Last new case",
     none: "None",
@@ -182,6 +190,16 @@ export const en = {
       if (trend === "down") return `DRC · down from ${p} in the 14 days before`
       return `DRC · about the same as the ${p} before`
     },
+    casesContext(weeks: number) {
+      return `Running total of health-zone cases over the last ${weeks} weeks`
+    },
+    deathsContext(unlinked: number) {
+      return `${formatNumber(unlinked)} not linked to a health zone`
+    },
+    new14Context(weeks: number) {
+      return `New cases each week, last ${weeks} weeks`
+    },
+    activeContext: "Zones by weeks since their last case; coloured bars are active (21 days or less)",
     activeNote(tracked: number, provinces: number) {
       return `Of ${tracked} in the reports, across ${provinces} ${provinces === 1 ? "province" : "provinces"}`
     },
@@ -241,6 +259,12 @@ export const en = {
     zones: "Health zones",
     share: "Share of new cases",
     unlinked: "Not linked to a health zone",
+    casesShort(n: number) {
+      return `${formatNumber(n)} ${n === 1 ? "case" : "cases"}`
+    },
+    deathsShort(n: number) {
+      return `${formatNumber(n)} ${n === 1 ? "death" : "deaths"}`
+    },
     total: "DRC total",
     zoneCounts(active: number, watch: number, cleared: number) {
       return `${active} active, ${watch} watch, ${cleared} cleared`

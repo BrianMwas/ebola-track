@@ -3,32 +3,30 @@
 import * as React from "react"
 
 import { provinceRows, trackedZones } from "@/lib/chart-data"
-import { formatNumber } from "@/lib/format"
-import type { Latest, Summary, Zones } from "@/lib/schema"
+import type { Latest, Summary, Weekly, Zones } from "@/lib/schema"
 import { trendOf } from "@/lib/status"
-import { useCountUp, useInViewOnce } from "@/lib/use-media-query"
 import { en } from "@/lib/strings"
 import { FreshnessLine } from "@/components/freshness-line"
-import { STATUS_TEXT } from "@/components/map/map-style"
+import { STATUS_COLORS } from "@/components/map/map-style"
+import { StatsBand, type Stat } from "@/components/stats-band/stats-band"
+
+/** Days per bar in the "active health zones" histogram, and how many bars. */
+const BIN_DAYS = 7
+const BINS = 9
 
 /** Page title, freshness and the headline numbers. */
 export function Overview({
   latest,
   summary,
   zones,
+  weekly,
 }: {
   latest: Latest
   summary: Summary
   zones: Zones
+  weekly: Weekly
 }) {
-  const drc = summary.countries.find((c) => c.iso3 === "COD")
-  const others = summary.countries.filter((c) => c.iso3 !== "COD")
-  const tracked = trackedZones(zones)
-  const new14 = tracked.reduce((s, z) => s + z.new_14d, 0)
-  const prev14 = tracked.reduce((s, z) => s + z.prev_14d, 0)
-  const active = tracked.filter((z) => z.status === "active").length
-  const activeProvinces = provinceRows(zones).filter((p) => p.active > 0).length
-  const [ref, seen] = useInViewOnce<HTMLDListElement>()
+  const stats = React.useMemo(() => headlineStats(summary, zones, weekly), [summary, zones, weekly])
 
   return (
     <section className="flex flex-col gap-5" aria-labelledby="page-title">
@@ -44,78 +42,72 @@ export function Overview({
           {en.disclaimer}
         </p>
       </div>
-      <dl ref={ref} className="grid grid-cols-2 border-t-2 border-t-rule sm:grid-cols-4 sm:border-b">
-        {drc && (
-          <Stat
-            label={en.overview.casesDrc}
-            value={drc.confirmed_cases}
-            start={seen}
-            note={en.overview.elsewhereCases(
-              others.reduce((s, c) => s + c.confirmed_cases, 0),
-              others.length
-            )}
-          />
-        )}
-        {drc && (
-          <Stat
-            label={en.overview.deathsDrc}
-            value={drc.confirmed_deaths}
-            start={seen}
-            note={en.overview.elsewhereDeaths(others.reduce((s, c) => s + c.confirmed_deaths, 0))}
-          />
-        )}
-        <Stat
-          label={en.overview.new14}
-          value={new14}
-          start={seen}
-          note={en.overview.new14Note(trendOf(new14, prev14), prev14)}
-        />
-        <Stat
-          label={en.overview.activeZones}
-          value={active}
-          start={seen}
-          valueColor={STATUS_TEXT.active}
-          note={en.overview.activeNote(tracked.length, activeProvinces)}
-        />
-      </dl>
+      {/* Inked histogram bars are active zones, so they take the active status colour. */}
+      <div style={{ "--stats-ink": STATUS_COLORS.active } as React.CSSProperties}>
+        <StatsBand stats={stats} layout="divided" locale="en" />
+      </div>
     </section>
   )
 }
 
-function Stat({
-  label,
-  value,
-  note,
-  valueColor,
-  start,
-}: {
-  label: string
-  value: number
-  start: boolean
-  note: string
-  valueColor?: string
-}) {
-  return (
-    <div className="flex flex-col gap-0.5 border-b py-3.5 pr-4 even:border-l even:pl-4 sm:border-b-0 sm:border-l sm:pl-5 sm:first:border-l-0 sm:first:pl-0">
-      <dt className="text-sm text-ink-2">{label}</dt>
-      <dd
-        className="font-heading text-[28px] leading-tight font-bold tracking-[-0.02em] sm:text-[34px]"
-        style={valueColor ? { color: valueColor } : undefined}
-      >
-        <CountUp value={value} start={start} />
-      </dd>
-      <dd className="text-[13px] text-muted-foreground">{note}</dd>
-    </div>
-  )
-}
+function headlineStats(summary: Summary, zones: Zones, weekly: Weekly): Stat[] {
+  const drc = summary.countries.find((c) => c.iso3 === "COD")
+  const others = summary.countries.filter((c) => c.iso3 !== "COD")
+  const tracked = trackedZones(zones)
+  const new14 = tracked.reduce((s, z) => s + z.new_14d, 0)
+  const prev14 = tracked.reduce((s, z) => s + z.prev_14d, 0)
+  const active = tracked.filter((z) => z.status === "active").length
+  const activeProvinces = provinceRows(zones).filter((p) => p.active > 0).length
 
-/** The final number is in the accessibility tree from the start; only the visible digits count up. */
-function CountUp({ value, start }: { value: number; start: boolean }) {
-  const shown = useCountUp(value, start)
-  return (
-    <>
-      <span aria-hidden>{formatNumber(shown)}</span>
-      <span className="sr-only">{formatNumber(value)}</span>
-    </>
+  // Running total of zone cases at the end of each week, ending on today's zone total.
+  const zoneTotal = tracked.reduce((s, z) => s + z.confirmed_cases_effective, 0)
+  let running = zoneTotal - weekly.zone_total.reduce((s, v) => s + v, 0)
+  const cumulative = weekly.zone_total.map((v) => (running += v))
+
+  // Zones that have had a case, by days since their last one; the last bar holds everything older.
+  const bins = Array.from({ length: BINS }, () => 0)
+  for (const z of tracked) {
+    if (z.days_since_last_case === null) continue
+    bins[Math.min(BINS - 1, Math.floor(z.days_since_last_case / BIN_DAYS))]++
+  }
+
+  const stats: Stat[] = []
+  if (drc) {
+    stats.push(
+      {
+        label: en.overview.casesDrc,
+        value: drc.confirmed_cases,
+        detail: en.overview.elsewhereCases(
+          others.reduce((s, c) => s + c.confirmed_cases, 0),
+          others.length
+        ),
+        context: en.overview.casesContext(weekly.zone_total.length),
+        visual: { kind: "trend", values: cumulative },
+      },
+      {
+        label: en.overview.deathsDrc,
+        value: drc.confirmed_deaths,
+        detail: en.overview.elsewhereDeaths(others.reduce((s, c) => s + c.confirmed_deaths, 0)),
+        context: drc.zones ? en.overview.deathsContext(Math.max(0, drc.zones.unassigned_deaths)) : undefined,
+      }
+    )
+  }
+  stats.push(
+    {
+      label: en.overview.new14,
+      value: new14,
+      detail: en.overview.new14Note(trendOf(new14, prev14), prev14),
+      context: en.overview.new14Context(weekly.zone_total.length),
+      visual: { kind: "trend", values: weekly.zone_total },
+    },
+    {
+      label: en.overview.activeZones,
+      value: active,
+      detail: en.overview.activeNote(tracked.length, activeProvinces),
+      context: en.overview.activeContext,
+      // Bars left of day 21 are active zones.
+      visual: { kind: "distribution", bins, max: BINS * BIN_DAYS, marker: 21 },
+    }
   )
+  return stats
 }

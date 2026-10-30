@@ -13,6 +13,7 @@ import { WatchCountdown } from "@/components/charts/watch-countdown"
 import { STATUS_TEXT } from "@/components/map/map-style"
 import { StatusMark } from "@/components/status-mark"
 import { TrendArrow } from "@/components/trend-arrow"
+import { MetricCard } from "@/components/metric-card/metric-card"
 
 const ZoneTrendChart = dynamic(() => import("@/components/charts/zone-trend-chart"), {
   ssr: false,
@@ -78,21 +79,31 @@ export function ZonePanel({
           />
         )}
 
-      <dl className="grid grid-cols-3 border-y">
-        <Stat label={en.zone.cumulative} value={formatNumber(zone.confirmed_cases)} />
-        <Stat
-          label={en.zone.deaths}
-          value={
-            zone.confirmed_deaths === null
-              ? en.zone.notReported
-              : formatNumber(zone.confirmed_deaths)
+      <div className="grid grid-cols-2 gap-x-4">
+        <MetricCard
+          label={en.zone.new14}
+          value={zone.new_14d}
+          change={signed(zone.new_14d - zone.prev_14d)}
+          context={en.zone.new14Context(zone.prev_14d)}
+        />
+        <MetricCard
+          label={en.zone.cumulative}
+          value={zone.confirmed_cases}
+          context={
+            zone.last_case_date
+              ? en.zone.lastCaseOn(formatShortDate(zone.last_case_date))
+              : en.zone.none
           }
         />
-        <Stat
-          label={en.zone.lastCase}
-          value={zone.last_case_date ? formatShortDate(zone.last_case_date) : en.zone.none}
-        />
-      </dl>
+        {zone.confirmed_deaths !== null ? (
+          <MetricCard label={en.zone.deaths} value={zone.confirmed_deaths} context={en.zone.deathsContext} />
+        ) : (
+          <div className="flex flex-col border-t py-2.5">
+            <span className="text-[13px] text-muted-foreground">{en.zone.deaths}</span>
+            <span className="text-base font-semibold">{en.zone.notReported}</span>
+          </div>
+        )}
+      </div>
 
       {zone.status !== "never" && (
         <section className="flex flex-col gap-3" aria-label={en.zone.trend}>
@@ -135,11 +146,8 @@ function Tag({ children }: { children: React.ReactNode }) {
   )
 }
 
-function Stat({ label, value }: { label: string; value: React.ReactNode }) {
-  return (
-    <div className="flex flex-col py-2 pr-2 not-first:border-l not-first:pl-2.5">
-      <dt className="text-[13px] text-muted-foreground">{label}</dt>
-      <dd className="text-xl font-bold">{value}</dd>
-    </div>
-  )
+/** "+55", "−20" or "±0": the change as text, with a true minus sign. */
+function signed(n: number): string {
+  if (n === 0) return "±0"
+  return n > 0 ? `+${formatNumber(n)}` : `−${formatNumber(-n)}`
 }

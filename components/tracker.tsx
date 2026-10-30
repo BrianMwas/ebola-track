@@ -101,7 +101,7 @@ function TrackerView({ data }: { data: Snapshot }) {
         className="mx-auto flex max-w-[1400px] flex-wrap items-start gap-10 px-4 pt-8 pb-24 sm:px-8 lg:pb-16"
       >
         <main className="flex min-w-0 flex-[999_1_640px] flex-col gap-11">
-          <Overview latest={latest} summary={summary} zones={zones} />
+          <Overview latest={latest} summary={summary} zones={zones} weekly={weekly} />
 
           <CountryTable
             countries={summary.countries}
@@ -150,7 +150,6 @@ function TrackerView({ data }: { data: Snapshot }) {
           <ZoneTable
             zones={ranked}
             weekly={weekly}
-            selectedId={selectedZoneId}
             onSelect={(id) => showOnMap(() => selectZone(id))}
           />
         </main>
