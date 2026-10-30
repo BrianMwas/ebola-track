@@ -105,6 +105,7 @@ function TrackerView({ data }: { data: Snapshot }) {
 
           <CountryTable
             countries={summary.countries}
+            noCases={summary.no_cases_reported}
             drcNew={drc ? drcNew : null}
             onSelect={(iso3) => showOnMap(() => selectCountry(iso3))}
           />
@@ -125,13 +126,13 @@ function TrackerView({ data }: { data: Snapshot }) {
                 isDesktop && detail ? (
                   <aside
                     key={selectedZoneId ?? selectedCountry?.iso3}
-                    className="absolute top-3 bottom-3 left-3 z-20 w-[300px] overflow-y-auto rounded border border-control bg-background p-4 motion-safe:animate-fade-up xl:w-[330px] [&_header]:pr-10"
+                    className="absolute top-3 bottom-3 left-3 z-20 w-[300px] overflow-y-auto rounded-lg border border-control bg-background p-4 motion-safe:animate-fade-up xl:w-[330px] [&_header]:pr-10"
                   >
                     <button
                       type="button"
                       aria-label={en.zone.close}
                       onClick={() => setSelection(null)}
-                      className="absolute top-2 right-2 flex size-10 items-center justify-center rounded text-ink-2 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                      className="absolute top-2 right-2 flex size-10 items-center justify-center rounded-lg text-ink-2 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                     >
                       <HugeiconsIcon icon={Cancel01Icon} size={20} aria-hidden />
                     </button>

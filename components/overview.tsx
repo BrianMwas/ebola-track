@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { InformationCircleIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 
 import { provinceRows, trackedZones } from "@/lib/chart-data"
 import type { Latest, Summary, Weekly, Zones } from "@/lib/schema"
@@ -46,6 +48,10 @@ export function Overview({
       <div style={{ "--stats-ink": STATUS_COLORS.active } as React.CSSProperties}>
         <StatsBand stats={stats} layout="divided" locale="en" />
       </div>
+      <p className="flex items-start gap-2 text-[15px] leading-relaxed text-ink-2">
+        <HugeiconsIcon icon={InformationCircleIcon} size={18} className="mt-0.5 shrink-0" aria-hidden />
+        {en.overview.undercount}
+      </p>
     </section>
   )
 }
@@ -77,17 +83,14 @@ function headlineStats(summary: Summary, zones: Zones, weekly: Weekly): Stat[] {
       {
         label: en.overview.casesDrc,
         value: drc.confirmed_cases,
-        detail: en.overview.elsewhereCases(
-          others.reduce((s, c) => s + c.confirmed_cases, 0),
-          others.length
-        ),
+        detail: en.overview.otherCountries(others.length),
         context: en.overview.casesContext(weekly.zone_total.length),
         visual: { kind: "trend", values: cumulative },
       },
       {
         label: en.overview.deathsDrc,
         value: drc.confirmed_deaths,
-        detail: en.overview.elsewhereDeaths(others.reduce((s, c) => s + c.confirmed_deaths, 0)),
+        detail: en.overview.otherCountries(others.length),
         context: drc.zones ? en.overview.deathsContext(Math.max(0, drc.zones.unassigned_deaths)) : undefined,
       }
     )

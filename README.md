@@ -88,11 +88,34 @@ With Workers Builds (Git integration), connect the repository and set:
 | Deploy command | `bunx wrangler deploy` |
 | Build variables | `BUN_VERSION=1.4.4`, `NODE_VERSION=22`, and `NEXT_PUBLIC_MAPBOX_TOKEN` if you use Mapbox |
 
+**Set `BUN_VERSION=1.4.4`.** Cloudflare's build image defaults to an older
+Bun (1.2.x), and `bun.lock` was written by Bun 1.4 with fields older versions
+may not read, so the install step can fail without it. Keep it in step with
+the Bun you use locally (`bun --version`). The Worker name in the dashboard
+must match `name` in `wrangler.jsonc` (`ebola-track`), or the deploy step
+fails.
+
 Cloudflare Pages also works with the same files: build command
 `bun run build`, output directory `out`, and the same variables.
 
 `NEXT_PUBLIC_*` values are baked in at build time, so set the Mapbox token
 before building. Restrict it to the deployed hostname in your Mapbox account.
+
+## Daily data updates
+
+`.github/workflows/update-data.yml` runs every day at 05:17 UTC (and on
+demand from the Actions tab). It rebuilds `public/data/` from the latest INRB
+release, runs the typecheck and tests, and commits to `main` only if the data
+changed. Cloudflare then deploys the new commit.
+
+- A schema error or an unmatched zone name fails the run and commits nothing;
+  GitHub emails the repository owner.
+- If `main` is protected, allow `github-actions[bot]` to push, or the commit
+  step will fail.
+- `data/country-totals.json` (countries other than DRC, hotlines aside) is
+  still updated by hand.
+- The site is "updated daily from INRB releases", not real time: INRB
+  transcribes INSP bulletins, which lag by a day or more.
 
 ## Scripts
 

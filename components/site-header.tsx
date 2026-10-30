@@ -19,7 +19,7 @@ export function SiteHeader() {
         <a href="#top" className="flex min-h-11 items-center gap-2.5 text-foreground hover:text-foreground">
           <HugeiconsIcon icon={Radar01Icon} size={24} strokeWidth={1.8} className="text-link" aria-hidden />
           <span className="font-heading text-lg font-bold tracking-[-0.01em]">{en.appName}</span>
-          <span className="rounded border border-control px-1.5 text-xs font-semibold text-muted-foreground">
+          <span className="rounded-lg border border-control px-1.5 text-xs font-semibold text-muted-foreground">
             {en.privatePreview}
           </span>
         </a>

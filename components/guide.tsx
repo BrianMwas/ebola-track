@@ -1,3 +1,4 @@
+import * as React from "react"
 import { Call02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 
@@ -35,20 +36,48 @@ export function Guide() {
           <HugeiconsIcon icon={Call02Icon} size={18} aria-hidden />
           {en.guide.hotlinesTitle}
         </h3>
-        {en.guide.hotlines.map((h) => (
-          <p key={h.country} className="flex justify-between gap-3 text-[15px]">
-            <span>{h.country}</span>
-            {h.number ? (
-              <a href={`tel:${h.number.replace(/\s/g, "")}`} className="font-bold text-foreground">
-                {h.number}
-              </a>
-            ) : (
-              <span className="text-sun-foreground">{en.guide.numberPending}</span>
-            )}
-          </p>
-        ))}
+        <ul className="flex flex-col gap-2">
+          {en.guide.hotlines.map((h) => (
+            <li key={h.country} className="flex flex-col text-[15px]">
+              <span className="flex justify-between gap-3">
+                <span>{h.country}</span>
+                {h.number ? (
+                  <a
+                    href={`tel:${h.number.replace(/\s/g, "")}`}
+                    className="font-bold text-foreground tabular-nums hover:text-link"
+                  >
+                    {h.number}
+                  </a>
+                ) : (
+                  <span className="text-right text-sun-foreground">{en.guide.numberPending}</span>
+                )}
+              </span>
+              {(h.extra || h.source_url) && (
+                <span className="text-[13px] text-sun-foreground">
+                  {h.extra}
+                  {h.extra && h.source_url && " · "}
+                  {h.source_url && (
+                    <a href={h.source_url} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+                      {h.source_name}
+                    </a>
+                  )}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
-      <p className="text-[13px] text-sun-foreground">{en.guide.source}</p>
+      <p className="text-[13px] text-sun-foreground">
+        {en.guide.source}{" "}
+        {en.guide.sourceLinks.map((l, i) => (
+          <React.Fragment key={l.url}>
+            {i > 0 && " · "}
+            <a href={l.url} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+              {l.name}
+            </a>
+          </React.Fragment>
+        ))}
+      </p>
     </section>
   )
 }

@@ -235,7 +235,7 @@ export function MapScene({
                 type="button"
                 onClick={() => onSelectCountry(c.iso3)}
                 className={cn(
-                  "flex items-center gap-1.5 rounded border border-[#c9d1db] bg-white py-0.5 text-xs leading-tight text-[#0b1b2e] focus-visible:ring-2 focus-visible:ring-[#1a56f0] focus-visible:outline-none",
+                  "flex items-center gap-1.5 rounded-lg border border-[#c9d1db] bg-white py-0.5 text-xs leading-tight text-[#0b1b2e] focus-visible:ring-2 focus-visible:ring-[#1a56f0] focus-visible:outline-none",
                   labelOnLeft(c.marker_point![0])
                     ? "flex-row-reverse pr-0.5 pl-2 text-right"
                     : "pr-2 pl-0.5 text-left"
