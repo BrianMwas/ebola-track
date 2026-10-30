@@ -12,6 +12,8 @@
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
     "build-snapshot": "bun scripts/build-snapshot.ts",
+    "preview": "bun run build && wrangler dev",
+    "deploy": "bun run build && wrangler deploy",
     "test": "vitest run"
   },
   "dependencies": {
@@ -45,6 +47,7 @@
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "5.0.4"
+    "vitest": "5.0.4",
+    "wrangler": "4.156.0"
   }
 }
