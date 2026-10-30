@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-29T14:05:11.764Z",
+  "generated_at": "2026-10-30T15:53:02.776Z",
   "sources": [
     {
       "id": "inrb-release",
       "name": "INRB-UMIE BDBV2026-Data, release build-2026-10-28-aad9fdd",
       "url": "https://github.com/INRB-UMIE/BDBV2026-Data/releases/tag/build-2026-10-28-aad9fdd",
-      "retrieved_at": "2026-10-29T14:05:11.764Z",
+      "retrieved_at": "2026-10-30T15:53:02.776Z",
       "reference": "build-2026-10-28-aad9fdd",
       "licence": "Repository code MIT (Kraemer Lab, University of Oxford). Epidemiological data is preliminary; the maintainers ask to be contacted before use prior to publication. Third-party layers keep their own licences.",
       "note": "Cite the repository (Zenodo DOI 10.5281/zenodo.21223302 per the README badge; the README citation section gives 10.5281/zenodo.20922946) and Mbulayi et al., Lancet Infectious Diseases: https://www.thelancet.com/journals/laninf/article/PIIS1473-3099(26)00330-0/fulltext"
@@ -14,7 +14,7 @@
       "id": "insp-sitrep",
       "name": "Institut National de Santé Publique (INSP) Situation Reports — SitRep MVE series (2026 Bundibugyo Ebolavirus outbreak)",
       "url": "https://insp.cd/",
-      "retrieved_at": "2026-10-29T14:05:11.764Z",
+      "retrieved_at": "2026-10-30T15:53:02.776Z",
       "reference": "SitRep MVE report dates up to 2026-10-27 (transcribed by INRB)",
       "licence": "INSP outbreak sitreps; reuse with attribution to INSP and citation of the specific report number and date. Confirm distribution terms with INSP before external republication.",
       "note": "Institut National de Santé Publique (INSP), Democratic Republic of the Congo. Situation reports on the 2026 Bundibugyo Ebolavirus outbreak (SitRep MVE 001, 002, 004–012, 2026; report 003 not committed). Health-zone geometry: DRC_Health_zones.shp (see data/shapefiles/)."
@@ -23,7 +23,7 @@
       "id": "worldpop",
       "name": "WorldPop gridded population estimates aggregated to DRC health zones",
       "url": "https://www.worldpop.org/",
-      "retrieved_at": "2026-10-29T14:05:11.764Z",
+      "retrieved_at": "2026-10-30T15:53:02.776Z",
       "reference": "retrieved by INRB 2026-05-20",
       "licence": "Creative Commons Attribution 4.0 International (CC BY 4.0); see https://www.worldpop.org/geodata/licensing",
       "note": "WorldPop (2025). Population counts and densities for Democratic Republic of the Congo health zones. University of Southampton. https://www.worldpop.org. Health-zone geometry: DRC_Health_zones.shp (see data/shapefiles/)."
@@ -32,7 +32,7 @@
       "id": "health-zones",
       "name": "GRID3 COD Health Zones v8.0, via the INRB build",
       "url": "https://data.grid3.org/datasets/GRID3::grid3-cod-health-zones-v8-0",
-      "retrieved_at": "2026-10-29T14:05:11.764Z",
+      "retrieved_at": "2026-10-30T15:53:02.776Z",
       "reference": "build-2026-10-28-aad9fdd build/drc_health_zones.geojson",
       "licence": "Not stated in the INRB repository; to be confirmed on the GRID3 dataset page before launch.",
       "note": "Simplified with mapshaper. Unaffected provinces are dissolved into outlines."
@@ -41,7 +41,7 @@
       "id": "natural-earth",
       "name": "Natural Earth 1:50m Admin 0 countries",
       "url": "https://www.naturalearthdata.com/",
-      "retrieved_at": "2026-10-29T14:05:11.764Z",
+      "retrieved_at": "2026-10-30T15:53:02.776Z",
       "reference": "natural-earth-vector v5.1.2",
       "licence": "Public domain",
       "note": "Country outlines and country label points (used to place country-level markers; not exact locations)."
@@ -50,25 +50,25 @@
       "id": "country-cod",
       "name": "ECDC: Ebola disease multi-country outbreak 2026",
       "url": "https://www.ecdc.europa.eu/en/ebola-disease-multi-country-outbreak-2026",
-      "retrieved_at": "2026-10-29T00:00:00Z",
+      "retrieved_at": "2026-10-30T00:00:00Z",
       "reference": "Democratic Republic of the Congo, as of 2026-10-26",
       "licence": "Figures as published by the source; see the source's terms.",
       "note": "Community transmission, 8 provinces"
     },
     {
       "id": "country-uga",
-      "name": "CDC: Ebola situation summary",
-      "url": "https://www.cdc.gov/ebola/situation-summary/index.html",
-      "retrieved_at": "2026-10-29T00:00:00Z",
-      "reference": "Uganda, as of n/a",
+      "name": "ECDC: Ebola disease multi-country outbreak 2026",
+      "url": "https://www.ecdc.europa.eu/en/public-health-events/2026-EIP-00026",
+      "retrieved_at": "2026-10-30T00:00:00Z",
+      "reference": "Uganda, as of 2026-07-28",
       "licence": "Figures as published by the source; see the source's terms.",
-      "note": "Outbreak declared over (27 Aug per UKHSA)"
+      "note": "Outbreak over: 15 cases imported from DRC, 5 local. Last case 21 Jun; declared over by the Ministry of Health on 28 Jul"
     },
     {
       "id": "country-ken",
       "name": "ebola-tracker.org (cites Kenya Ministry of Health and WHO)",
       "url": "https://ebola-tracker.org/en/kenya/",
-      "retrieved_at": "2026-10-29T00:00:00Z",
+      "retrieved_at": "2026-10-30T00:00:00Z",
       "reference": "Kenya, as of 2026-10-26",
       "licence": "Figures as published by the source; see the source's terms.",
       "note": "One cluster linked to an imported case. 135 contacts traced. First 20 contacts left quarantine 26 Oct"
@@ -77,7 +77,7 @@
       "id": "country-nga",
       "name": "ECDC: Ebola disease multi-country outbreak 2026",
       "url": "https://www.ecdc.europa.eu/en/ebola-disease-multi-country-outbreak-2026",
-      "retrieved_at": "2026-10-29T00:00:00Z",
+      "retrieved_at": "2026-10-30T00:00:00Z",
       "reference": "Nigeria, as of 2026-10-26",
       "licence": "Figures as published by the source; see the source's terms.",
       "note": "Imported via Entebbe. Patient medevaced to Switzerland on 26 Oct"
@@ -86,7 +86,7 @@
       "id": "country-fra",
       "name": "CDC: Ebola situation summary",
       "url": "https://www.cdc.gov/ebola/situation-summary/index.html",
-      "retrieved_at": "2026-10-29T00:00:00Z",
+      "retrieved_at": "2026-10-30T00:00:00Z",
       "reference": "France, as of 2026-10-25",
       "licence": "Figures as published by the source; see the source's terms.",
       "note": "Returning doctor, no onward transmission"
@@ -95,7 +95,7 @@
       "id": "country-nld",
       "name": "WHO Disease Outbreak News DON619",
       "url": "https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON619",
-      "retrieved_at": "2026-10-29T00:00:00Z",
+      "retrieved_at": "2026-10-30T00:00:00Z",
       "reference": "Netherlands, as of 2026-10-01",
       "licence": "Figures as published by the source; see the source's terms.",
       "note": "MSF worker infected in DRC and medevaced. Not counted by CDC"

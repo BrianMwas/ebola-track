@@ -42,13 +42,13 @@
       "iso3": "UGA",
       "confirmed_cases": 20,
       "confirmed_deaths": 2,
-      "as_of": null,
-      "source_name": "CDC: Ebola situation summary",
-      "source_url": "https://www.cdc.gov/ebola/situation-summary/index.html",
-      "situation": "Outbreak declared over (27 Aug per UKHSA)",
+      "as_of": "2026-07-28",
+      "source_name": "ECDC: Ebola disease multi-country outbreak 2026",
+      "source_url": "https://www.ecdc.europa.eu/en/public-health-events/2026-EIP-00026",
+      "situation": "Outbreak over: 15 cases imported from DRC, 5 local. Last case 21 Jun; declared over by the Ministry of Health on 28 Jul",
       "situation_is_override": false,
       "classification": "outbreak_over",
-      "note": "Outbreak declared over (27 Aug per UKHSA)",
+      "note": "Outbreak over: 15 cases imported from DRC, 5 local. Last case 21 Jun; declared over by the Ministry of Health on 28 Jul",
       "marker_label": "Outbreak declared over",
       "map_placement": "map",
       "marker_point": [
@@ -56,8 +56,8 @@
         1.972589
       ],
       "cases_by_origin": {
-        "local": null,
-        "imported": null,
+        "local": 5,
+        "imported": 15,
         "medevac": null
       },
       "reviewed_by": null
@@ -151,6 +151,17 @@
         "imported": null,
         "medevac": 1
       },
+      "reviewed_by": null
+    }
+  ],
+  "no_cases_reported": [
+    {
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "as_of": "2026-10-21",
+      "note": "Chief Medical Officer: \"So far, there is no Ebola disease in Tanzania.\" Entry screening for all travellers since 17 Oct",
+      "source_name": "The Chanzo, quoting Tanzania's Chief Medical Officer",
+      "source_url": "https://thechanzo.com/2026/10/22/tanzanias-ebola-alert-stays-in-place-as-kenyas-case-total-rises-to-nine/",
       "reviewed_by": null
     }
   ]

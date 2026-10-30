@@ -79,7 +79,11 @@ There is one point per report date with a valid value; days without a report are
 
 ### `summary.json`
 
-`{ "data_as_of": date, "countries": [...] }`. Each country entry has:
+`{ "data_as_of": date, "countries": [...], "no_cases_reported": [...] }`.
+
+`no_cases_reported` lists neighbouring countries that a named source says have no confirmed case, copied from `data/country-totals.json`: `country`, `iso3`, `as_of` (when the source said so), `note`, `source_name`, `source_url`, `reviewed_by`. The page shows them under the country table. Absence from `countries` alone never means "no cases".
+
+Each country entry has:
 
 | Field | Meaning |
 |---|---|

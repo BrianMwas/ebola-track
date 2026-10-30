@@ -46,7 +46,7 @@ export function MapLegend({
   const x = 2 + radii.reduce((s, r) => s + r * 2 + 6, 0)
 
   return (
-    <div className="absolute top-3 left-3 z-10 flex max-w-[calc(100%-5rem)] sm:top-auto sm:right-3 sm:bottom-9 sm:left-auto sm:max-w-[calc(100%-1.5rem)] flex-col gap-2 rounded border border-control bg-background/95 px-3 py-2.5 text-[13px] text-foreground">
+    <div className="absolute top-3 left-3 z-10 flex max-w-[calc(100%-5rem)] sm:top-auto sm:right-3 sm:bottom-9 sm:left-auto sm:max-w-[calc(100%-1.5rem)] flex-col gap-2 rounded-lg border border-control bg-background/95 px-3 py-2.5 text-[13px] text-foreground">
       <ul aria-label={en.map.legendStatus} className="grid grid-cols-2 gap-x-4 gap-y-1">
         {STATUS_ITEMS.map(([s, label]) => (
           <li key={s} className="flex items-center gap-1.5">

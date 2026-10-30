@@ -525,6 +525,11 @@ async function main() {
   const releaseUrl = `https://github.com/${INRB_REPO}/releases/tag/${tag}`
   const crossChecks: Provenance["cross_checks"] = []
   const summaryCountries: CountrySummary[] = []
+  for (const c of totals.no_cases_reported) {
+    if (c.reviewed_by === null) {
+      log(`warning: ${c.country} (no cases reported) in data/country-totals.json has no reviewed_by`)
+    }
+  }
   for (const c of totals.countries) {
     if (c.reviewed_by === null) {
       log(`warning: ${c.country} in data/country-totals.json has no reviewed_by`)
@@ -601,7 +606,7 @@ async function main() {
   }
   const summary = validate(
     SummarySchema,
-    { data_as_of: dataAsOf, countries: summaryCountries },
+    { data_as_of: dataAsOf, countries: summaryCountries, no_cases_reported: totals.no_cases_reported },
     "summary.json"
   )
 

@@ -140,7 +140,7 @@ export function ZonePanel({
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded border border-control px-1.5 py-0.5 text-[13px] font-semibold text-ink-2">
+    <span className="rounded-lg border border-control px-1.5 py-0.5 text-[13px] font-semibold text-ink-2">
       {children}
     </span>
   )

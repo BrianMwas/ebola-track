@@ -79,7 +79,7 @@ export function ZoneMap({
         <div
           role="group"
           aria-label={en.map.circleMetric}
-          className="inline-flex overflow-hidden rounded border border-control"
+          className="inline-flex overflow-hidden rounded-lg border border-control"
         >
           {(["new_14d", "confirmed_cases"] as const).map((m) => (
             <button
@@ -100,7 +100,7 @@ export function ZoneMap({
           ))}
         </div>
       </div>
-      <div className="relative h-[60svh] min-h-96 overflow-hidden rounded bg-[#d6e8f5] lg:aspect-[10/7] lg:h-auto lg:min-h-[34rem]">
+      <div className="relative h-[60svh] min-h-96 overflow-hidden rounded-lg bg-[#d6e8f5] lg:aspect-[10/7] lg:h-auto lg:min-h-[34rem]">
         {useMapbox ? (
           <MapboxMap
             {...shared}
@@ -140,7 +140,7 @@ function ZoneSearch({
     if (id) onSelectZone(id)
   }
   return (
-    <label className="flex min-h-10 w-full items-center gap-2 rounded border border-input px-2.5 text-muted-foreground focus-within:ring-2 focus-within:ring-ring sm:w-60">
+    <label className="flex min-h-10 w-full items-center gap-2 rounded-lg border border-input px-2.5 text-muted-foreground focus-within:ring-2 focus-within:ring-ring sm:w-60">
       <HugeiconsIcon icon={Search01Icon} size={18} aria-hidden />
       <span className="sr-only">{en.mapSection.search}</span>
       <input

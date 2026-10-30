@@ -173,7 +173,7 @@ export function ZoneTable({
           <label htmlFor={searchId} className="text-[13px] font-semibold text-ink-2">
             {en.zoneTable.search}
           </label>
-          <div className="flex min-h-10 items-center gap-2 rounded border border-input px-2.5 text-muted-foreground focus-within:ring-2 focus-within:ring-ring">
+          <div className="flex min-h-10 items-center gap-2 rounded-lg border border-input px-2.5 text-muted-foreground focus-within:ring-2 focus-within:ring-ring">
             <HugeiconsIcon icon={Search01Icon} size={18} aria-hidden />
             <input
               id={searchId}
@@ -192,7 +192,7 @@ export function ZoneTable({
           <div
             role="group"
             aria-labelledby={`${searchId}-status`}
-            className="flex flex-wrap overflow-hidden rounded border border-control"
+            className="flex flex-wrap overflow-hidden rounded-lg border border-control"
           >
             {[null, ...STATUSES].map((st, i) => (
               <button
@@ -222,7 +222,7 @@ export function ZoneTable({
             id={provinceId}
             value={province}
             onChange={(e) => setProvince(e.target.value)}
-            className="min-h-10 rounded border border-input bg-background px-2.5 text-[15px] text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            className="min-h-10 rounded-lg border border-input bg-background px-2.5 text-[15px] text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
             <option value="">{en.zoneTable.allProvinces}</option>
             {provinces.map((p) => (

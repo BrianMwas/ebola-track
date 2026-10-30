@@ -175,6 +175,19 @@ export type Weekly = z.infer<typeof WeeklySchema>
 
 /* ---------------------------------------- data/country-totals.json (input) */
 
+/** A country with no confirmed case, stated by a named source on a given date. */
+const noCasesReported = z.strictObject({
+  country: z.string().min(1),
+  iso3: z.string().length(3),
+  /** When the source said so. */
+  as_of: isoDate,
+  /** What the source said, briefly. */
+  note: z.string().min(1),
+  source_name: z.string().min(1),
+  source_url: z.url(),
+  reviewed_by: z.string().min(1).nullable(),
+})
+
 const casesByOrigin = z.strictObject({
   local: count.nullable(),
   imported: count.nullable(),
@@ -207,6 +220,8 @@ export const CountryTotalsSchema = z.strictObject({
       reviewed_by: z.string().min(1).nullable(),
     })
   ),
+  /** Neighbouring countries with no confirmed case, each with its source. Shown under the country table. */
+  no_cases_reported: z.array(noCasesReported),
 })
 export type CountryTotals = z.infer<typeof CountryTotalsSchema>
 
@@ -260,6 +275,8 @@ export const SummarySchema = z.strictObject({
         .optional(),
     })
   ),
+  /** Copied from data/country-totals.json. */
+  no_cases_reported: z.array(noCasesReported),
 })
 export type Summary = z.infer<typeof SummarySchema>
 export type CountrySummary = Summary["countries"][number]

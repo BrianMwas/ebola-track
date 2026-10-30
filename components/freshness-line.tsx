@@ -26,7 +26,7 @@ export function FreshnessLine({ latest }: { latest: Latest }) {
         {en.freshness(latest.data_as_of, latest.inrb_release_tag, checked)}
       </p>
       {stale && (
-        <p className="w-fit rounded bg-sun-soft px-3 py-2 text-sm font-medium text-sun-foreground">
+        <p className="w-fit rounded-lg bg-sun-soft px-3 py-2 text-sm font-medium text-sun-foreground">
           {en.freshnessStale}
         </p>
       )}

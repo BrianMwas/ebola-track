@@ -88,7 +88,7 @@ export function ExposureWindow() {
         <p className="text-sm text-muted-foreground">{en.exposure.subtitle}</p>
       </div>
 
-      <div role="group" aria-label={en.exposure.mode} className="grid grid-cols-2 overflow-hidden rounded border border-control">
+      <div role="group" aria-label={en.exposure.mode} className="grid grid-cols-2 overflow-hidden rounded-lg border border-control">
         {(["contact", "sick"] as const).map((m) => (
           <button
             key={m}
@@ -124,7 +124,7 @@ export function ExposureWindow() {
       <div aria-live="polite" className="flex flex-col gap-2.5">
         {!valid && <p className="text-[15px] text-ink-2">{en.exposure.prompt}</p>}
         {valid && !r && (
-          <p className="rounded bg-sun-soft px-3 py-2.5 text-[15px] text-sun-foreground">{en.exposure.future}</p>
+          <p className="rounded-lg bg-sun-soft px-3 py-2.5 text-[15px] text-sun-foreground">{en.exposure.future}</p>
         )}
         {r && (
           <div

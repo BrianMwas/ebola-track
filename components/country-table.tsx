@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import { formatNumber, formatShortDate } from "@/lib/format"
-import type { CountrySummary } from "@/lib/schema"
+import type { CountrySummary, Summary } from "@/lib/schema"
 import type { Trend } from "@/lib/status"
 import { en } from "@/lib/strings"
 import { StatusMark } from "@/components/status-mark"
@@ -28,10 +28,13 @@ type Row = {
 /** Cases by country, largest first. The first thing on the page. */
 export function CountryTable({
   countries,
+  noCases,
   drcNew,
   onSelect,
 }: {
   countries: CountrySummary[]
+  /** Countries a named source says have no confirmed case. */
+  noCases: Summary["no_cases_reported"]
   drcNew: { value: number; trend: Trend } | null
   onSelect: (iso3: string) => void
 }) {
@@ -136,6 +139,26 @@ export function CountryTable({
         caption={en.countries.title}
         defaultSort={{ key: "confirmed_cases", direction: "desc" }}
       />
+      {noCases.length > 0 && (
+        <div className="flex flex-col gap-1 border-b pb-3 text-[15px]">
+          <h3 className="text-[13px] font-semibold text-ink-2">{en.countries.noCases}</h3>
+          <ul className="flex flex-col gap-1">
+            {noCases.map((c) => (
+              <li key={c.iso3}>
+                <strong className="font-bold">{c.country}</strong>
+                <span className="text-ink-2"> · {c.note}</span>{" "}
+                <span className="text-[13px] whitespace-nowrap text-muted-foreground">
+                  ({formatShortDate(c.as_of)} ·{" "}
+                  <a href={c.source_url} target="_blank" rel="noreferrer">
+                    {c.source_name}
+                  </a>
+                  )
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <p className="text-[13px] text-muted-foreground">{en.countries.note}</p>
     </section>
   )

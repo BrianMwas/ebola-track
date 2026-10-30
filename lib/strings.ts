@@ -216,6 +216,7 @@ export const en = {
     notReported: "Not reported",
     dateNotGiven: "Date not given",
     note: "Imported and medevac cases are counted where they were confirmed and kept apart from local transmission.",
+    noCases: "No confirmed cases reported",
   },
 
   mapSection: {
