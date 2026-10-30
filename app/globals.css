@@ -5,72 +5,95 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    --background: #ffffff;
+    --foreground: #0b1b2e;
+    --card: #ffffff;
+    --card-foreground: #0b1b2e;
+    --popover: #ffffff;
+    --popover-foreground: #0b1b2e;
+    --primary: #0b1b2e;
+    --primary-foreground: #ffffff;
+    --secondary: #f2f4f7;
+    --secondary-foreground: #0b1b2e;
+    --muted: #f4f6f9;
+    --muted-foreground: #5f6b7a;
+    --accent: #f2f6ff;
+    --accent-foreground: #0b1b2e;
+    --destructive: #c41d52;
+    /* Hairlines between rows. */
+    --border: #e3e7ed;
+    /* Input edges: 3:1 or better against the page. */
+    --input: #7f8b9b;
+    --ring: #1a56f0;
+    /* Earlier data, then recent data, in charts. Never a status colour. */
+    --chart-1: #a9bad3;
+    --chart-2: #1a56f0;
+    --chart-3: #4b5768;
+    --chart-4: #7f8b9b;
+    --chart-5: #c9d1db;
+    --radius: 0.375rem;
+    /* Secondary text, 7.3:1. */
+    --ink-2: #4b5768;
+    /* 2 px rule above sections and stat rows. */
+    --rule: #0b1b2e;
+    /* Edges of buttons, toggles and map overlays. */
+    --control: #c9d1db;
+    --link: #1a56f0;
+    --link-hover: #0b3bb8;
+    /* "What should I do?" only. */
+    --sun: #ffd84d;
+    --sun-soft: #fff4bf;
+    --sun-foreground: #3a3000;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #0b1b2e;
+    --sidebar-primary: #0b1b2e;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #f2f6ff;
+    --sidebar-accent-foreground: #0b1b2e;
+    --sidebar-border: #e3e7ed;
+    --sidebar-ring: #1a56f0;
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+    --background: #0b1220;
+    --foreground: #e8edf4;
+    --card: #111a2b;
+    --card-foreground: #e8edf4;
+    --popover: #111a2b;
+    --popover-foreground: #e8edf4;
+    --primary: #e8edf4;
+    --primary-foreground: #0b1220;
+    --secondary: #1a2436;
+    --secondary-foreground: #e8edf4;
+    --muted: #151e2e;
+    --muted-foreground: #9aa6b5;
+    --accent: #17233a;
+    --accent-foreground: #e8edf4;
+    --destructive: #ff6b93;
+    --border: #243041;
+    --input: #6b778a;
+    --ring: #8fb0ff;
+    --chart-1: #3d4f6b;
+    --chart-2: #7ea2ff;
+    --chart-3: #b7c2cf;
+    --chart-4: #6b778a;
+    --chart-5: #334155;
+    --ink-2: #b7c2cf;
+    --rule: #e8edf4;
+    --control: #334155;
+    --link: #8fb0ff;
+    --link-hover: #b7ccff;
+    --sun: #ffd84d;
+    --sun-soft: #3a3200;
+    --sun-foreground: #fff4bf;
+    --sidebar: #111a2b;
+    --sidebar-foreground: #e8edf4;
+    --sidebar-primary: #8fb0ff;
+    --sidebar-primary-foreground: #0b1220;
+    --sidebar-accent: #17233a;
+    --sidebar-accent-foreground: #e8edf4;
+    --sidebar-border: #243041;
+    --sidebar-ring: #8fb0ff;
 }
 
 @theme inline {
@@ -107,6 +130,14 @@
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
+    --color-ink-2: var(--ink-2);
+    --color-rule: var(--rule);
+    --color-control: var(--control);
+    --color-link: var(--link);
+    --color-link-hover: var(--link-hover);
+    --color-sun: var(--sun);
+    --color-sun-soft: var(--sun-soft);
+    --color-sun-foreground: var(--sun-foreground);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -114,6 +145,24 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+    /* One-time reveals when data arrives. Used with motion-safe: only. */
+    --animate-grow-up: grow-up 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    --animate-grow-right: grow-right 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    --animate-fade-in: fade-in 400ms ease-out both;
+    --animate-fade-up: fade-up 350ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+    @keyframes grow-up {
+        from { transform: scaleY(0); }
+    }
+    @keyframes grow-right {
+        from { transform: scaleX(0); }
+    }
+    @keyframes fade-in {
+        from { opacity: 0; }
+    }
+    @keyframes fade-up {
+        from { opacity: 0; transform: translateY(6px); }
+    }
 }
 
 @layer base {
@@ -125,5 +174,15 @@
     }
   html {
     @apply font-sans;
+    font-variant-numeric: tabular-nums;
     }
+  a {
+    @apply text-link hover:text-link-hover;
+    }
+}
+
+/* A section waiting to be scrolled into view keeps its reveal at the first frame. */
+.reveal-wait,
+.reveal-wait * {
+    animation-play-state: paused !important;
 }

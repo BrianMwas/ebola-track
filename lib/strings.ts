@@ -2,13 +2,14 @@
  * English UI strings. French and Swahili will reuse these keys (Phase 2,
  * marked TODO_TRANSLATE); health guidance is never machine-translated.
  */
-import { formatDate, formatNumber } from "./format"
+import { formatDate, formatNumber, formatShortDate } from "./format"
 import type { ZoneStatus } from "./status"
 
 export const en = {
   appName: "East Africa Ebola status",
   appTagline: "Bundibugyo virus outbreak, 2026",
-  banner:
+  /** Required on every page (hard rule 2 of the brief); shown under the page title. */
+  disclaimer:
     "Unofficial awareness tool. Data is preliminary and likely undercounts. Not medical advice. For symptoms or exposure, call your national health hotline.",
   privatePreview: "Private preview",
   loading: "Loading data",
@@ -112,6 +113,14 @@ export const en = {
 
   zone: {
     cumulative: "Confirmed cases",
+    new14: "New cases, 14 days",
+    new14Context(previous: number) {
+      return `${formatNumber(previous)} in the 14 days before`
+    },
+    lastCaseOn(date: string) {
+      return `Last new case ${date}`
+    },
+    deathsContext: "Confirmed, as reported for this zone",
     deaths: "Confirmed deaths",
     lastCase: "Last new case",
     none: "None",
@@ -148,6 +157,228 @@ export const en = {
       return date ? `As of ${formatDate(date)}` : "Date not given by source"
     },
     source: "Source",
+  },
+
+  footer:
+    "Primary source: INRB-UMIE/BDBV2026-Data releases, transcribed by INRB from INSP's SitRep MVE bulletins; preliminary. Other countries: the sources listed in each row. Status is measured against the dataset's latest report date, never today's date.",
+
+  nav: {
+    label: "Sections",
+    countries: "Countries",
+    map: "Map",
+    trend: "Trend",
+    provinces: "Provinces",
+    zones: "Health zones",
+    whatToDo: "What to do",
+  },
+
+  overview: {
+    title: "Bundibugyo Ebola outbreak, 2026",
+    casesDrc: "Confirmed cases, DRC",
+    deathsDrc: "Confirmed deaths, DRC",
+    new14: "New cases, last 14 days",
+    activeZones: "Active health zones",
+    elsewhereCases(n: number, countries: number) {
+      return `Plus ${formatNumber(n)} in ${countries} other ${countries === 1 ? "country" : "countries"}`
+    },
+    elsewhereDeaths(n: number) {
+      return n === 0 ? "None reported elsewhere" : `Plus ${formatNumber(n)} in other countries`
+    },
+    new14Note(trend: "up" | "flat" | "down", previous: number) {
+      const p = formatNumber(previous)
+      if (trend === "up") return `DRC · up from ${p} in the 14 days before`
+      if (trend === "down") return `DRC · down from ${p} in the 14 days before`
+      return `DRC · about the same as the ${p} before`
+    },
+    casesContext(weeks: number) {
+      return `Running total of health-zone cases over the last ${weeks} weeks`
+    },
+    deathsContext(unlinked: number) {
+      return `${formatNumber(unlinked)} not linked to a health zone`
+    },
+    new14Context(weeks: number) {
+      return `New cases each week, last ${weeks} weeks`
+    },
+    activeContext: "Zones by weeks since their last case; coloured bars are active (21 days or less)",
+    activeNote(tracked: number, provinces: number) {
+      return `Of ${tracked} in the reports, across ${provinces} ${provinces === 1 ? "province" : "provinces"}`
+    },
+  },
+
+  countries: {
+    title: "Cases by country",
+    country: "Country",
+    situation: "Situation",
+    cases: "Confirmed cases",
+    deaths: "Deaths",
+    new14: "New, 14 days",
+    asOf: "As of · source",
+    notReported: "Not reported",
+    dateNotGiven: "Date not given",
+    note: "Imported and medevac cases are counted where they were confirmed and kept apart from local transmission.",
+  },
+
+  mapSection: {
+    title: "Where cases are",
+    subtitle: "Health zones coloured by days since the last confirmed case. Select a zone for its trend.",
+    search: "Find a health zone",
+    legendActive: "Active, 0–21 days",
+    legendWatch: "Watch, 22–42",
+    legendCleared: "Cleared, 42+",
+    legendNever: "No cases",
+    note: "Circle area is proportional to cases. Country markers show the country, not where cases are. “Cleared” is this site's label, not an official end-of-outbreak declaration.",
+  },
+
+  weekly: {
+    title: "New cases each week, DRC",
+    summary(latestWeek: number, weekEnd: string, last14: number, prev14: number) {
+      const a = formatNumber(last14)
+      const b = formatNumber(prev14)
+      const compare =
+        Math.abs(last14 - prev14) <= 0.1 * Math.max(last14, prev14)
+          ? "about the same as"
+          : last14 > prev14
+            ? "more than"
+            : "fewer than"
+      return `${formatNumber(latestWeek)} new confirmed cases in the week to ${formatShortDate(weekEnd)}. The last 14 days (${a}) are ${compare} the 14 before (${b}).`
+    },
+    chartLabel(weeks: number, peak: number, peakEnd: string, latest: number) {
+      return `Weekly new confirmed cases in the DRC by report date, ${weeks} weeks. Peak of ${formatNumber(peak)} in the week to ${formatShortDate(peakEnd)}; ${formatNumber(latest)} in the latest week.`
+    },
+    bar(weekEnd: string, n: number) {
+      return `Week to ${formatShortDate(weekEnd)}: ${formatNumber(n)} new`
+    },
+    recent: "Last 14 days",
+    earlier: "Earlier weeks",
+    note: "Week ending on the date shown, by report date. Cases not assigned to a health zone are not included.",
+  },
+
+  provinces: {
+    title: "DRC by province",
+    province: "Province",
+    zones: "Health zones",
+    share: "Share of new cases",
+    unlinked: "Not linked to a health zone",
+    casesShort(n: number) {
+      return `${formatNumber(n)} ${n === 1 ? "case" : "cases"}`
+    },
+    deathsShort(n: number) {
+      return `${formatNumber(n)} ${n === 1 ? "death" : "deaths"}`
+    },
+    total: "DRC total",
+    zoneCounts(active: number, watch: number, cleared: number) {
+      return `${active} active, ${watch} watch, ${cleared} cleared`
+    },
+    zonesShort(active: number, watch: number, cleared: number) {
+      if (active > 0) return `${active} active`
+      if (watch > 0) return `${watch} watch`
+      return `${cleared} cleared`
+    },
+    note: "One mark per health zone that has had a case: active, watch or cleared.",
+  },
+
+  zoneTable: {
+    title: "Health zones",
+    sortHint: "Most new cases first. Select a column heading to sort.",
+    filters: "Filter health zones",
+    search: "Search",
+    searchPlaceholder: "Zone or province",
+    status: "Status",
+    all: "All",
+    statusShort: { active: "Active", watch: "Watch", cleared: "Cleared", never: "No cases" } satisfies Record<ZoneStatus, string>,
+    allProvinces: "All provinces",
+    count(shown: number, total: number) {
+      return `Showing ${shown} of ${total}`
+    },
+    clear: "Clear filters",
+    noMatch: "No health zones match these filters.",
+    zone: "Health zone",
+    prev: "14 days before",
+    trend: "Trend",
+    weekly: "Weekly, 12 weeks",
+    total: "All cases",
+    showAll(n: number) {
+      return `See all ${n} health zones`
+    },
+    showTop(n: number) {
+      return `Show the top ${n}`
+    },
+    sparkLabel(values: number[]) {
+      return `Weekly new cases, last ${values.length} weeks: ${values.join(", ")}`
+    },
+    note: "Weekly bars are scaled to each zone's own peak; the last two weeks are blue.",
+  },
+
+  // TODO_HEALTH_REVIEW: this guidance must be checked by a health authority before launch.
+  guide: {
+    title: "What should I do?",
+    steps: [
+      {
+        title: "Know the signs",
+        body: "Fever, tiredness, muscle pain, headache and sore throat. Later: vomiting, diarrhoea, rash and sometimes bleeding. Early signs can look like malaria or typhoid.",
+      },
+      {
+        title: "If you feel sick, keep apart",
+        body: "Separate yourself from other people, including your household.",
+      },
+      {
+        title: "Call before you go",
+        body: "Call your national health hotline for advice on where to get care.",
+      },
+      {
+        title: "Avoid blood and body fluids",
+        body: "Of anyone who is sick or has died from Ebola. Leave care and burials to trained teams.",
+      },
+    ],
+    hotlinesTitle: "Health hotlines",
+    // TODO_HEALTH_REVIEW: add each number from an official source.
+    hotlines: [
+      { country: "DRC", number: null },
+      { country: "Uganda", number: null },
+      { country: "Kenya", number: null },
+    ] as { country: string; number: string | null }[],
+    numberPending: "Number to be confirmed",
+    source: "From WHO and CDC guidance. Not yet reviewed by a health authority.",
+  },
+
+  exposure: {
+    title: "Exposure window",
+    subtitle: "Work out which days matter.",
+    mode: "Who is this for",
+    contact: "I had contact",
+    sick: "Someone is sick",
+    contactDate: "Last day you were in contact with a sick person",
+    onsetDate: "Day their symptoms started",
+    prompt: "Pick a date to see the window.",
+    future: "Pick a date that is not in the future.",
+    watchUntil: "Watch for symptoms until",
+    ended: "Your 21 days ended on",
+    dayOf(day: number, left: number) {
+      if (day === 0) return "The 21 days start tomorrow"
+      return `Day ${day} of 21 · ${left} ${left === 1 ? "day" : "days"} to go`
+    },
+    sinceContact(days: number) {
+      return `${days} days since that contact`
+    },
+    contactAdvice:
+      "Take your temperature twice a day. If you get a fever or other signs, keep apart from others and call your hotline. A new contact starts the 21 days again.",
+    endedAdvice:
+      "21 days is the longest time between contact and the first symptoms. If you feel unwell, call your hotline anyway.",
+    caughtBetween: "They most likely caught it between",
+    passOnFrom(date: string) {
+      return `They can pass it on from ${formatDate(date)}`
+    },
+    sickAdvice(onset: string) {
+      return `People cannot pass on Ebola before symptoms start. Anyone in close contact with them since ${formatShortDate(onset)} should watch for symptoms for 21 days after their last contact.`
+    },
+    dayAxis(day: number, date: string) {
+      return `Day ${day}, ${formatShortDate(date)}`
+    },
+    onsetAxis(date: string) {
+      return `Symptoms, ${formatShortDate(date)}`
+    },
+    method:
+      "Uses WHO's incubation period of 2 to 21 days. Method adapted from CDC's Ebola Exposure Window Calculator. Not medical advice.",
   },
 }
 

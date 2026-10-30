@@ -20,6 +20,7 @@ The zod schemas in `lib/schema.ts` are the source of truth for the shapes. `buil
 | `zones.geojson` | Health zones in affected provinces, with status |
 | `context.geojson` | Outlines with no case data: unaffected DRC provinces and regional countries |
 | `timeseries/<zone-id>.json` | Per-zone cumulative confirmed series (tracked zones only) |
+| `weekly.json` | New confirmed cases per week, for all tracked zones together and for each one |
 | `provenance.json` | Sources, licences, revisions, input anomalies, cross-checks |
 
 ### `latest.json`
@@ -122,3 +123,16 @@ Hand-maintained and validated by `CountryTotalsSchema`.
 ## Input: `data/unmatched-names.json`
 
 Written on every build. It lists any zone name in the files we use that matches neither a canonical `nom` nor `data/aliases.csv`. A non-empty list stops the build.
+
+### `weekly.json`
+
+Derived from the time series (`buildWeekly` in `lib/chart-data.ts`) so the page can draw weekly charts without loading every series file.
+
+| Field | Type | Meaning |
+|---|---|---|
+| `data_as_of` | date | Same as `latest.json` |
+| `week_ends` | date[] | Last day of each 7-day window, oldest first; the last is `data_as_of` (18 weeks) |
+| `zone_total` | int[] | New confirmed cases per window, summed over all tracked zones (cases not assigned to a zone are not included) |
+| `zones` | { [zone id]: int[] } | New confirmed cases per window for each tracked zone |
+
+New cases are changes in the running maximum, attributed to the report date, as in the time series.

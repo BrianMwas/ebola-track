@@ -14,10 +14,11 @@ import {
 import type { DailyBar } from "@/lib/chart-data"
 import { formatDate, formatNumber, formatShortDate } from "@/lib/format"
 import { en } from "@/lib/strings"
+import { usePrefersReducedMotion } from "@/lib/use-media-query"
 
 /**
  * Daily new confirmed cases by report date, with the last 14 days
- * emphasised in ink and earlier days in grey. Neutral colours on purpose:
+ * emphasised in blue and earlier days in pale blue-grey. Neutral colours on purpose:
  * the status colours on this site mean status and nothing else.
  *
  * Stand-in for the mebius "charts-overview" card until its registry can be
@@ -30,6 +31,7 @@ export default function ZoneTrendChart({
   bars: DailyBar[]
   summary: string
 }) {
+  const reducedMotion = usePrefersReducedMotion()
   const ticks = [bars[0]?.date, bars[Math.floor(bars.length / 2)]?.date, bars.at(-1)?.date]
     .filter(Boolean) as string[]
 
@@ -62,11 +64,16 @@ export default function ZoneTrendChart({
               )}
               isAnimationActive={false}
             />
-            <Bar dataKey="new" radius={[2, 2, 0, 0]} isAnimationActive={false}>
+            <Bar
+              dataKey="new"
+              isAnimationActive={!reducedMotion}
+              animationDuration={600}
+              animationEasing="ease-out"
+            >
               {bars.map((b) => (
                 <Cell
                   key={b.date}
-                  fill={b.recent ? "var(--foreground)" : "var(--chart-1)"}
+                  fill={b.recent ? "var(--chart-2)" : "var(--chart-1)"}
                 />
               ))}
             </Bar>
@@ -75,11 +82,11 @@ export default function ZoneTrendChart({
       </div>
       <div className="flex gap-5 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
-          <span aria-hidden className="size-2.5 rounded-[2px] bg-foreground" />
+          <span aria-hidden className="size-2.5 bg-chart-2" />
           {en.zone.chartLast14}
         </span>
         <span className="flex items-center gap-1">
-          <span aria-hidden className="size-2.5 rounded-[2px] bg-chart-1" />
+          <span aria-hidden className="size-2.5 bg-chart-1" />
           {en.zone.chartEarlier}
         </span>
       </div>

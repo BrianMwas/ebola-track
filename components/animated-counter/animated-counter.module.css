@@ -1,0 +1,50 @@
+.counter {
+  display: inline-flex;
+}
+
+.number {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--font-heading), sans-serif;
+  /* Set --counter-size on a parent to change it. */
+  font-size: var(--counter-size, clamp(28px, 3vw, 34px));
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The final value holds the width; the live digits sit on top of it. */
+.digits {
+  position: relative;
+  display: inline-grid;
+}
+
+.sizer,
+.live {
+  grid-area: 1 / 1;
+}
+
+.sizer {
+  visibility: hidden;
+}
+
+.live {
+  text-align: right;
+}
+
+.suffix {
+  margin-left: 0.1em;
+  font-size: 0.6em;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

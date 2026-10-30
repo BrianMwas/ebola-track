@@ -27,14 +27,14 @@ function SheetContent({
       <SheetPrimitive.Popup
         data-slot="sheet-content"
         className={cn(
-          "fixed inset-x-0 bottom-0 z-50 flex max-h-[85svh] flex-col overflow-y-auto rounded-t-3xl border-t bg-background px-6 pt-4 pb-10 shadow-lg transition-transform duration-200 outline-none data-ending-style:translate-y-full data-starting-style:translate-y-full",
+          "fixed inset-x-0 bottom-0 z-50 flex max-h-[85svh] flex-col overflow-y-auto rounded-t-lg border-t border-control bg-background px-5 pt-3 pb-10 shadow-lg transition-transform duration-200 outline-none data-ending-style:translate-y-full data-starting-style:translate-y-full",
           className
         )}
         {...props}
       >
         <div
           aria-hidden
-          className="mx-auto mb-6 h-1 w-10 shrink-0 rounded-full bg-muted-foreground/30"
+          className="mx-auto mb-4 h-1 w-10 shrink-0 rounded-full bg-control"
         />
         {children}
       </SheetPrimitive.Popup>

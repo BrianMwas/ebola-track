@@ -1,0 +1,69 @@
+/*
+ * A compact metric: label and change on top, the number, one line of context.
+ * Ruled rather than boxed, to match the page.
+ */
+
+.card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.625rem 0;
+  border-top: 1px solid var(--border);
+  /* The number is smaller here than in the headline band. */
+  --counter-size: 22px;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+
+/* The change pill: ink, never a status colour; direction is in the sign. */
+.top small {
+  display: inline-flex;
+  padding: 0 0.375rem;
+  border: 1px solid var(--control);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+
+
+
+.swap {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  vertical-align: bottom;
+  white-space: nowrap;
+}
+
+.swapBlock {
+  position: relative;
+  display: block;
+}
+
+.sizer {
+  position: absolute;
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+.text {
+  display: inline-block;
+}

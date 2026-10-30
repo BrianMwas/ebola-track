@@ -2,15 +2,9 @@
 
 import { formatNumber } from "@/lib/format"
 import { en } from "@/lib/strings"
-import { cn } from "@/lib/utils"
-import { Disclosure } from "@/components/ui/disclosure"
+import { StatusMark } from "@/components/status-mark"
 
-import {
-  INK,
-  STATUS_COLORS,
-  circleRadius,
-  type CircleMetric,
-} from "./map-style"
+import { INK, circleRadius, type CircleMetric } from "./map-style"
 
 const NICE = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000]
 
@@ -23,109 +17,78 @@ export function legendValues(max: number): number[] {
   return [...new Set(values)].sort((a, b) => a - b)
 }
 
-const STATUS_ORDER = ["active", "watch", "cleared", "never"] as const
+const STATUS_ITEMS = [
+  ["active", en.mapSection.legendActive],
+  ["watch", en.mapSection.legendWatch],
+  ["cleared", en.mapSection.legendCleared],
+  ["never", en.mapSection.legendNever],
+] as const
 
+/** Compact legend above the map attribution: status, stale hatch and circle sizes (circles from sm up). */
 export function MapLegend({
   metric,
-  onMetricChange,
   scale,
   maxValue,
 }: {
   metric: CircleMetric
-  onMetricChange: (m: CircleMetric) => void
   scale: number
   maxValue: number
 }) {
   const values = legendValues(maxValue)
-  const largest = values.length ? circleRadius(values.at(-1)!, scale) : 0
-  const size = Math.ceil(largest * 2 + 4)
+  const radii = values.map((v) => circleRadius(v, scale))
+  const height = Math.ceil((radii.at(-1) ?? 0) * 2 + 4)
+  // Circles side by side, 6 px apart.
+  const circles = radii.map((r, i) => ({
+    r,
+    cx: 2 + radii.slice(0, i).reduce((s, prev) => s + prev * 2 + 6, 0) + r,
+    v: values[i],
+  }))
+  const x = 2 + radii.reduce((s, r) => s + r * 2 + 6, 0)
 
   return (
-    <div className="flex flex-col gap-6 rounded-2xl border bg-card p-6 text-sm text-card-foreground">
-      <div className="flex flex-col gap-8 sm:flex-row sm:flex-wrap sm:items-start sm:gap-16">
-      <div>
-        <div className="mb-3 font-medium">{en.map.legendStatus}</div>
-        <ul className="grid grid-cols-2 gap-x-8 gap-y-2.5">
-          {STATUS_ORDER.map((s) => (
-            <li key={s} className="flex items-center gap-2">
-              <span
-                aria-hidden
-                className="size-3.5 rounded-[3px] ring-1 ring-black/20"
-                style={{ background: STATUS_COLORS[s] }}
-              />
-              {en.status[s]}
-            </li>
-          ))}
-          <li className="col-span-2 flex items-center gap-2">
-            <span
-              aria-hidden
-              className="size-3.5 rounded-[3px] ring-1 ring-black/20"
-              style={{
-                background:
-                  "repeating-linear-gradient(135deg, #5a5a5a 0 1.5px, transparent 1.5px 4px)",
-              }}
-            />
-            {en.map.legendStale}
+    <div className="absolute top-3 left-3 z-10 flex max-w-[calc(100%-5rem)] sm:top-auto sm:right-3 sm:bottom-9 sm:left-auto sm:max-w-[calc(100%-1.5rem)] flex-col gap-2 rounded border border-control bg-background/95 px-3 py-2.5 text-[13px] text-foreground">
+      <ul aria-label={en.map.legendStatus} className="grid grid-cols-2 gap-x-4 gap-y-1">
+        {STATUS_ITEMS.map(([s, label]) => (
+          <li key={s} className="flex items-center gap-1.5">
+            <StatusMark status={s} className="size-3" />
+            {label}
           </li>
-        </ul>
-      </div>
-
-      <div>
-        <div className="mb-3 font-medium" id="circle-metric-label">
-          {en.map.circleMetric}
+        ))}
+        <li className="col-span-2 flex items-center gap-1.5">
+          <span
+            aria-hidden
+            className="size-3 rounded-[2px] ring-1 ring-[#b7c2cf] ring-inset"
+            style={{
+              backgroundColor: "#eef2f7",
+              backgroundImage: "repeating-linear-gradient(135deg, #44546a 0 1.5px, transparent 1.5px 4px)",
+            }}
+          />
+          {en.map.legendStale}
+        </li>
+      </ul>
+      {values.length > 0 && (
+        <div className="hidden items-end gap-2.5 border-t pt-2 sm:flex">
+          <svg width={x} height={height} aria-hidden>
+            {circles.map((c) => (
+              <circle
+                key={c.v}
+                cx={c.cx}
+                cy={height - c.r - 2}
+                r={c.r}
+                fill="#ffffff"
+                fillOpacity={0.6}
+                stroke={INK}
+                strokeWidth={1.5}
+              />
+            ))}
+          </svg>
+          <span className="leading-snug text-ink-2">
+            {values.map(formatNumber).join(" · ")}
+            <br />
+            {metric === "new_14d" ? en.map.circlesNew : en.map.circlesTotal}
+          </span>
         </div>
-        <div
-          role="group"
-          aria-labelledby="circle-metric-label"
-          className="mb-4 inline-flex rounded-lg bg-muted p-1"
-        >
-          {(["new_14d", "confirmed_cases"] as const).map((m) => (
-            <button
-              key={m}
-              type="button"
-              aria-pressed={metric === m}
-              onClick={() => onMetricChange(m)}
-              className={cn(
-                "rounded-md px-3 py-1.5 text-xs transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                metric === m
-                  ? "bg-background font-medium text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {m === "new_14d" ? en.map.circlesNew : en.map.circlesTotal}
-            </button>
-          ))}
-        </div>
-        {values.length > 0 && (
-          <div className="flex items-end gap-5">
-            {values.map((v) => {
-              const r = circleRadius(v, scale)
-              return (
-                <figure key={v} className="flex flex-col items-center gap-1.5">
-                  <svg width={size} height={size} aria-hidden>
-                    <circle
-                      cx={size / 2}
-                      cy={size - r - 2}
-                      r={r}
-                      fill="#ffffff"
-                      fillOpacity={0.45}
-                      stroke={INK}
-                      strokeWidth={1.5}
-                    />
-                  </svg>
-                  <figcaption className="text-xs tabular-nums">{formatNumber(v)}</figcaption>
-                </figure>
-              )
-            })}
-          </div>
-        )}
-      </div>
-      </div>
-      <Disclosure summary={en.map.howToRead}>
-        <p>{en.map.legendExplain}</p>
-        <p>{en.map.circleExplain}</p>
-        <p>{en.map.countryLevel}</p>
-      </Disclosure>
+      )}
     </div>
   )
 }

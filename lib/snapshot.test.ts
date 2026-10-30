@@ -13,8 +13,10 @@ import {
   ProvenanceSchema,
   SummarySchema,
   TimeseriesSchema,
+  WeeklySchema,
   ZonesSchema,
 } from "./schema"
+import { buildWeekly } from "./chart-data"
 
 const DIR = path.join(process.cwd(), "public", "data")
 const read = (f: string) => JSON.parse(readFileSync(path.join(DIR, f), "utf8"))
@@ -45,6 +47,15 @@ describe.skipIf(!existsSync(path.join(DIR, "latest.json")))("snapshot", () => {
     expect(
       zones.features.some((f) => f.properties.confirmed_cases === drc.confirmed_cases)
     ).toBe(false)
+  })
+
+  it("weekly.json matches the zone time series", () => {
+    const weekly = WeeklySchema.parse(read("weekly.json"))
+    const series = readdirSync(path.join(DIR, "timeseries")).map((f) =>
+      TimeseriesSchema.parse(read(`timeseries/${f}`))
+    )
+    expect(weekly.data_as_of).toBe(latest.data_as_of)
+    expect(weekly).toEqual(buildWeekly(series, latest.data_as_of))
   })
 
   it("the as-of date and status counts agree across files", () => {

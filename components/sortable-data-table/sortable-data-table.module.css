@@ -1,0 +1,359 @@
+/*
+ * Sortable data table, styled for this site: ink rule under the header,
+ * hairlines between rows, tabular numbers, a faint band under the sorted
+ * column. Below 640 px each row becomes a small card and the header becomes a
+ * scrolling strip of sort buttons.
+ */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.scroller {
+  position: relative;
+  overflow-x: auto;
+}
+
+/* Still tint under the sorted column. */
+.band {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+  background: color-mix(in oklab, var(--link) 6%, transparent);
+  pointer-events: none;
+  transition: left 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), width 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.table {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+}
+
+.table[data-fixed] {
+  table-layout: fixed;
+}
+
+/* Section headings already name each table; the caption is for screen readers. */
+.table caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.table thead tr {
+  border-bottom: 1px solid var(--rule);
+}
+
+.table th {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 0.625rem 0.75rem;
+  vertical-align: middle;
+}
+
+.table th:first-child,
+.table td:first-child {
+  padding-left: 0;
+}
+
+.table th:last-child,
+.table td:last-child {
+  padding-right: 0;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+}
+
+.table tbody tr:hover {
+  background: color-mix(in oklab, var(--muted) 60%, transparent);
+}
+
+.table tbody tr[data-selected] {
+  background: var(--accent);
+}
+
+.table [data-numeric] {
+  text-align: right;
+}
+
+.table th[data-sorted] {
+  color: var(--foreground);
+}
+
+/* Sort buttons */
+
+.sortButton {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  border-radius: 4px;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.sortButton:hover {
+  color: var(--foreground);
+}
+
+.sortButton:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.sortInner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Numbers sit right; their arrow goes on the left so the label stays aligned with the figures. */
+[data-numeric] .sortInner {
+  flex-direction: row-reverse;
+}
+
+.sortIcon {
+  position: relative;
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+}
+
+.sortHint {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.sortButton:hover .sortHint,
+.sortButton:focus-visible .sortHint {
+  opacity: 0.4;
+}
+
+th[data-sorted] .sortHint {
+  opacity: 0;
+}
+
+.sortArrow {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  color: var(--link);
+}
+
+.empty {
+  padding: 2rem 0 !important;
+  text-align: center;
+  color: var(--ink-2);
+}
+
+/* Selection (not used on this site's tables, kept working) */
+
+.selectCol {
+  width: 2.75rem;
+}
+
+.selectCell {
+  width: 2.75rem;
+}
+
+.selectHit {
+  position: relative;
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.selectInput {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.selectBox {
+  position: relative;
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--input);
+  border-radius: 4px;
+  color: var(--primary-foreground);
+}
+
+.selectBox[data-on] {
+  border-color: var(--primary);
+}
+
+.selectInput:focus-visible + .selectBox {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.selectFill {
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 4px;
+  background: var(--primary);
+}
+
+.selectMark {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.footer {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 1rem;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.count {
+  display: inline-flex;
+  gap: 0.3em;
+}
+
+.count[data-active] {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.number {
+  font-weight: 600;
+}
+
+.clear {
+  font-weight: 600;
+  color: var(--link);
+  cursor: pointer;
+}
+
+/* Text that swaps in place */
+
+.swap {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.swapInner {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.swapText {
+  display: inline-block;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Phones: the header becomes a strip of sort buttons and each row a card. */
+@media (max-width: 639px) {
+  .band {
+    display: none;
+  }
+
+  .table,
+  .table tbody {
+    display: block;
+    min-width: 0;
+  }
+
+  .table thead {
+    display: block;
+  }
+
+  .table thead tr {
+    display: flex;
+    gap: 0.25rem 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+  }
+
+  .table thead th {
+    padding: 0.25rem 0 !important;
+    flex: none;
+  }
+
+  .table thead th:not([data-sortable]) {
+    display: none;
+  }
+
+  [data-numeric] .sortInner {
+    flex-direction: row;
+  }
+
+  .table tbody tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem 1rem;
+    padding: 0.75rem 0;
+  }
+
+  .table td {
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important;
+    text-align: left !important;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    font-size: 12px;
+    color: var(--muted-foreground);
+  }
+
+  .table td[data-primary] {
+    grid-column: 1 / -1;
+    font-weight: 600;
+  }
+
+  .table td[data-primary]::before,
+  .table td.empty::before {
+    content: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .band,
+  .sortHint {
+    transition: none;
+  }
+}

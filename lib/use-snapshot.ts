@@ -7,6 +7,7 @@ import type {
   Latest,
   Summary,
   Timeseries,
+  Weekly,
   Zones,
 } from "./schema"
 
@@ -15,6 +16,7 @@ export type Snapshot = {
   summary: Summary
   zones: Zones
   context: Context
+  weekly: Weekly
 }
 
 type State =
@@ -43,13 +45,14 @@ export function useSnapshot(): State {
         cache: "no-store",
       })
       const v = encodeURIComponent(latest.snapshot)
-      const [summary, zones, context] = await Promise.all([
+      const [summary, zones, context, weekly] = await Promise.all([
         getJson<Summary>(`/data/summary.json?v=${v}`),
         getJson<Zones>(`/data/zones.geojson?v=${v}`),
         getJson<Context>(`/data/context.geojson?v=${v}`),
+        getJson<Weekly>(`/data/weekly.json?v=${v}`),
       ])
       if (!cancelled) {
-        setState({ state: "ready", data: { latest, summary, zones, context } })
+        setState({ state: "ready", data: { latest, summary, zones, context, weekly } })
       }
     })().catch((err: unknown) => {
       if (!cancelled) {

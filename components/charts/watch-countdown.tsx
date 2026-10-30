@@ -19,7 +19,7 @@ export function WatchCountdown({
 }) {
   const ticks = Array.from({ length: WATCH_MAX_DAYS }, (_, i) => i + 1)
   return (
-    <figure className="flex flex-col gap-3 rounded-xl bg-muted/50 p-4">
+    <figure className="flex flex-col gap-3 rounded-lg bg-muted p-4">
       <figcaption className="text-sm font-medium">{en.zone.countdownTitle}</figcaption>
       <div
         role="meter"

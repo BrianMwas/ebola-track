@@ -56,12 +56,52 @@ telemetry is turned off. The app itself collects nothing: no analytics, no
 location storage. Without a token, the MapLibre fallback makes no third-party
 requests.
 
+## Deploying to Cloudflare
+
+The build is a static export (`out/`, about 140 files), served by Cloudflare
+Workers static assets with no Worker script. `wrangler.jsonc` points at
+`out/`; `public/_headers` sets caching (`latest.json` never cached, hashed
+files cached for a year) and `noindex` on every response.
+
+**Keep it private until permission is on file** (see `PUBLIC_LAUNCH_BLOCKED`
+above): put the deployment behind Cloudflare Access (Zero Trust → Access →
+Applications) before sharing the URL.
+
+From a machine:
+
+```bash
+bunx wrangler login
+```
+
+```bash
+bun run deploy
+```
+
+`bun run preview` builds and serves the same files locally with Cloudflare's
+runtime (`wrangler dev`).
+
+With Workers Builds (Git integration), connect the repository and set:
+
+| Setting | Value |
+|---|---|
+| Build command | `bun run build` |
+| Deploy command | `bunx wrangler deploy` |
+| Build variables | `BUN_VERSION=1.4.4`, `NODE_VERSION=22`, and `NEXT_PUBLIC_MAPBOX_TOKEN` if you use Mapbox |
+
+Cloudflare Pages also works with the same files: build command
+`bun run build`, output directory `out`, and the same variables.
+
+`NEXT_PUBLIC_*` values are baked in at build time, so set the Mapbox token
+before building. Restrict it to the deployed hostname in your Mapbox account.
+
 ## Scripts
 
 | Script | What it does |
 |---|---|
 | `bun dev` | Development server (copies the MapLibre worker first) |
 | `bun run build` | Static export to `out/` (serve with any static file server) |
+| `bun run preview` | Build, then serve `out/` locally with Cloudflare's runtime |
+| `bun run deploy` | Build, then deploy to Cloudflare with Wrangler |
 | `bun run build-snapshot` | Rebuild `public/data/` from the INRB release; fails on any schema error or unmatched zone name |
 | `bun run test` | Vitest: status logic, INRB parsing, chart data, snapshot checks |
 | `bun run lint` / `bun run typecheck` | ESLint / TypeScript |
@@ -81,7 +121,7 @@ requests.
 ## Layout
 
 ```
-app/                    page and layout (banner on every page)
+app/                    page and layout (disclaimer under the page title)
 components/             tracker, panels, charts, map (components/map/)
 lib/                    schema, status, INRB parsing, formatting, strings
 scripts/                build-snapshot.ts, copy-vendor.ts

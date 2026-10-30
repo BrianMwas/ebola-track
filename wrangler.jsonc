@@ -1,0 +1,13 @@
+{
+  // Cloudflare Workers, static assets only: `next build` exports the whole
+  // site to out/, so there is no Worker script. Deploy with `bun run deploy`
+  // or connect the repo in Workers Builds (see README, "Deploying to Cloudflare").
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ebola-track",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./out",
+    // Unknown paths get out/404.html with a 404 status.
+    "not_found_handling": "404-page"
+  }
+}

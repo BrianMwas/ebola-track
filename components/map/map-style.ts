@@ -2,25 +2,32 @@
  * Layer definitions shared by the Mapbox and MapLibre renderers. Plain style
  * spec objects, so either engine can draw them.
  *
- * Status colours: one calm indigo-violet family that deepens with severity
- * (deliberately not orange or red, so the map informs without alarming, and
- * not plain blue, so zones are not mistaken for lakes). Checked with the dataviz
- * palette validator (--ordinal, light surface #f4f2ee): monotone lightness,
- * visible step gaps, light end >= 2:1 against the surface.
+ * Status colours: raspberry, amber and mint, read at a glance as "cases now",
+ * "waiting" and "clear". Lightness falls steadily from no cases to active, so
+ * the order holds in greyscale and for colour-blind readers. Not blue, so zones
+ * are not mistaken for lakes, and never reused for anything but status.
  */
 import type { ZoneStatus } from "@/lib/status"
 
 export const STATUS_COLORS: Record<ZoneStatus, string> = {
-  active: "#3f2f96",
-  watch: "#7366c9",
-  cleared: "#a7a1d8",
-  never: "#f4f2ee",
+  active: "#e0245e",
+  watch: "#ff9f1c",
+  cleared: "#86d9bd",
+  never: "#eef2f7",
 }
 
-export const SURFACE = "#f4f2ee"
-export const WATER = "#dde5e8"
-export const OUTLINE = "#8f877c"
-export const INK = "#1f2328"
+/** Status words in text: the fill colours darkened to 5.5:1 or better on white. */
+export const STATUS_TEXT: Record<ZoneStatus, string> = {
+  active: "#c41d52",
+  watch: "#9a5800",
+  cleared: "#137255",
+  never: "#4b5768",
+}
+
+export const SURFACE = "#ffffff"
+export const WATER = "#d6e8f5"
+export const OUTLINE = "#9aa6b5"
+export const INK = "#0b1b2e"
 export const STALE_PATTERN_ID = "stale-hatch"
 
 export const SOURCES = {
@@ -72,12 +79,15 @@ export function contextLayers(hasBasemap: boolean): LayerSpec[] {
       type: "line",
       source: SOURCES.context,
       filter: ["==", ["get", "kind"], "country"],
-      paint: { "line-color": "#5f574d", "line-width": 1.1 },
+      paint: { "line-color": "#7d8a9c", "line-width": 1.2 },
     },
   ]
 }
 
-export function zoneLayers(hasBasemap: boolean): LayerSpec[] {
+/** How long the map takes to colour in and grow its circles; 0 when motion is reduced. */
+export type Reveal = { shown: boolean; duration: number }
+
+export function zoneLayers(hasBasemap: boolean, reveal: Reveal): LayerSpec[] {
   return [
     {
       id: "zones-fill",
@@ -95,12 +105,10 @@ export function zoneLayers(hasBasemap: boolean): LayerSpec[] {
           STATUS_COLORS.cleared,
           STATUS_COLORS.never,
         ],
-        "fill-opacity": [
-          "case",
-          ["==", ["get", "status"], "never"],
-          hasBasemap ? 0.35 : 1,
-          0.9,
-        ],
+        "fill-opacity": reveal.shown
+          ? ["case", ["==", ["get", "status"], "never"], hasBasemap ? 0.35 : 1, 0.9]
+          : 0,
+        "fill-opacity-transition": { duration: reveal.duration, delay: 0 },
       },
     },
     {
@@ -108,13 +116,21 @@ export function zoneLayers(hasBasemap: boolean): LayerSpec[] {
       type: "fill",
       source: SOURCES.zones,
       filter: ["==", ["get", "stale"], true],
-      paint: { "fill-pattern": STALE_PATTERN_ID },
+      paint: {
+        "fill-pattern": STALE_PATTERN_ID,
+        "fill-opacity": reveal.shown ? 1 : 0,
+        "fill-opacity-transition": { duration: reveal.duration, delay: 0 },
+      },
     },
     {
       id: "zones-line",
       type: "line",
       source: SOURCES.zones,
-      paint: { "line-color": OUTLINE, "line-width": 0.4, "line-opacity": 0.8 },
+      // White edges keep neighbouring coloured zones apart; zones with no cases get a grey edge.
+      paint: {
+        "line-color": ["case", ["==", ["get", "status"], "never"], "#c3cdd9", "#ffffff"],
+        "line-width": 0.6,
+      },
     },
   ]
 }
@@ -129,20 +145,25 @@ export function selectedZoneLayer(selectedId: string | null): LayerSpec {
   }
 }
 
-export function circleLayer(metric: CircleMetric, scale: number): LayerSpec {
+export function circleLayer(metric: CircleMetric, scale: number, reveal: Reveal): LayerSpec {
   return {
     id: "zone-circles",
     type: "circle",
     source: SOURCES.points,
     filter: [">", ["get", metric], 0],
     paint: {
-      "circle-radius": ["*", scale, ["sqrt", ["get", metric]]],
+      // Circles grow in after the zones colour in, and resize smoothly when the metric changes.
+      "circle-radius": reveal.shown ? ["*", scale, ["sqrt", ["get", metric]]] : 0,
+      "circle-radius-transition": { duration: reveal.duration * 1.3, delay: reveal.shown ? reveal.duration / 2 : 0 },
       // White fill with an ink outline reads on both light and dark zone fills.
       "circle-color": "#ffffff",
-      "circle-opacity": 0.45,
+      "circle-opacity": reveal.shown ? 0.45 : 0,
       "circle-stroke-color": INK,
       "circle-stroke-width": 1.5,
-      "circle-stroke-opacity": 0.9,
+      // Hidden outlines too, or zero-radius circles would show as dots before the reveal.
+      "circle-stroke-opacity": reveal.shown ? 0.9 : 0,
+      "circle-opacity-transition": { duration: reveal.duration, delay: reveal.shown ? reveal.duration / 2 : 0 },
+      "circle-stroke-opacity-transition": { duration: reveal.duration, delay: reveal.shown ? reveal.duration / 2 : 0 },
     },
   }
 }
