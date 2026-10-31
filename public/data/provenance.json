@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-30T15:53:02.776Z",
+  "generated_at": "2026-10-31T10:55:57.682Z",
   "sources": [
     {
       "id": "inrb-release",
-      "name": "INRB-UMIE BDBV2026-Data, release build-2026-10-28-aad9fdd",
-      "url": "https://github.com/INRB-UMIE/BDBV2026-Data/releases/tag/build-2026-10-28-aad9fdd",
-      "retrieved_at": "2026-10-30T15:53:02.776Z",
-      "reference": "build-2026-10-28-aad9fdd",
+      "name": "INRB-UMIE BDBV2026-Data, release build-2026-10-30-ce68d0e",
+      "url": "https://github.com/INRB-UMIE/BDBV2026-Data/releases/tag/build-2026-10-30-ce68d0e",
+      "retrieved_at": "2026-10-31T10:55:57.682Z",
+      "reference": "build-2026-10-30-ce68d0e",
       "licence": "Repository code MIT (Kraemer Lab, University of Oxford). Epidemiological data is preliminary; the maintainers ask to be contacted before use prior to publication. Third-party layers keep their own licences.",
       "note": "Cite the repository (Zenodo DOI 10.5281/zenodo.21223302 per the README badge; the README citation section gives 10.5281/zenodo.20922946) and Mbulayi et al., Lancet Infectious Diseases: https://www.thelancet.com/journals/laninf/article/PIIS1473-3099(26)00330-0/fulltext"
     },
@@ -14,8 +14,8 @@
       "id": "insp-sitrep",
       "name": "Institut National de Santé Publique (INSP) Situation Reports — SitRep MVE series (2026 Bundibugyo Ebolavirus outbreak)",
       "url": "https://insp.cd/",
-      "retrieved_at": "2026-10-30T15:53:02.776Z",
-      "reference": "SitRep MVE report dates up to 2026-10-27 (transcribed by INRB)",
+      "retrieved_at": "2026-10-31T10:55:57.682Z",
+      "reference": "SitRep MVE report dates up to 2026-10-29 (transcribed by INRB)",
       "licence": "INSP outbreak sitreps; reuse with attribution to INSP and citation of the specific report number and date. Confirm distribution terms with INSP before external republication.",
       "note": "Institut National de Santé Publique (INSP), Democratic Republic of the Congo. Situation reports on the 2026 Bundibugyo Ebolavirus outbreak (SitRep MVE 001, 002, 004–012, 2026; report 003 not committed). Health-zone geometry: DRC_Health_zones.shp (see data/shapefiles/)."
     },
@@ -23,7 +23,7 @@
       "id": "worldpop",
       "name": "WorldPop gridded population estimates aggregated to DRC health zones",
       "url": "https://www.worldpop.org/",
-      "retrieved_at": "2026-10-30T15:53:02.776Z",
+      "retrieved_at": "2026-10-31T10:55:57.682Z",
       "reference": "retrieved by INRB 2026-05-20",
       "licence": "Creative Commons Attribution 4.0 International (CC BY 4.0); see https://www.worldpop.org/geodata/licensing",
       "note": "WorldPop (2025). Population counts and densities for Democratic Republic of the Congo health zones. University of Southampton. https://www.worldpop.org. Health-zone geometry: DRC_Health_zones.shp (see data/shapefiles/)."
@@ -32,8 +32,8 @@
       "id": "health-zones",
       "name": "GRID3 COD Health Zones v8.0, via the INRB build",
       "url": "https://data.grid3.org/datasets/GRID3::grid3-cod-health-zones-v8-0",
-      "retrieved_at": "2026-10-30T15:53:02.776Z",
-      "reference": "build-2026-10-28-aad9fdd build/drc_health_zones.geojson",
+      "retrieved_at": "2026-10-31T10:55:57.682Z",
+      "reference": "build-2026-10-30-ce68d0e build/drc_health_zones.geojson",
       "licence": "Not stated in the INRB repository; to be confirmed on the GRID3 dataset page before launch.",
       "note": "Simplified with mapshaper. Unaffected provinces are dissolved into outlines."
     },
@@ -41,7 +41,7 @@
       "id": "natural-earth",
       "name": "Natural Earth 1:50m Admin 0 countries",
       "url": "https://www.naturalearthdata.com/",
-      "retrieved_at": "2026-10-30T15:53:02.776Z",
+      "retrieved_at": "2026-10-31T10:55:57.682Z",
       "reference": "natural-earth-vector v5.1.2",
       "licence": "Public domain",
       "note": "Country outlines and country label points (used to place country-level markers; not exact locations)."
@@ -102,12 +102,12 @@
     }
   ],
   "release": {
-    "tag": "build-2026-10-28-aad9fdd",
-    "tarball_url": "https://github.com/INRB-UMIE/BDBV2026-Data/releases/download/build-2026-10-28-aad9fdd/build-2026-10-28-aad9fdd.tar.gz",
-    "sha256": "c60a0adf1bdb580141ec1284c4caa6690093cf3160992a181af2cc713b85c3a0",
-    "bytes": 5305804,
-    "manifest_built_at": "2026-10-28T21:50:45+00:00",
-    "manifest_commit": "aad9fdd"
+    "tag": "build-2026-10-30-ce68d0e",
+    "tarball_url": "https://github.com/INRB-UMIE/BDBV2026-Data/releases/download/build-2026-10-30-ce68d0e/build-2026-10-30-ce68d0e.tar.gz",
+    "sha256": "ccfc0a58a5ba3042d4753160e634abfc3ca4b12e28b09fcf351ee74f7c116e76",
+    "bytes": 5307946,
+    "manifest_built_at": "2026-10-30T22:20:35+00:00",
+    "manifest_commit": "ce68d0e"
   },
   "revisions": [
     {
