@@ -86,6 +86,7 @@ With Workers Builds (Git integration), connect the repository and set:
 |---|---|
 | Build command | `bun run build` |
 | Deploy command | `bunx wrangler deploy` |
+| Non-production branch deploy command | `npx wrangler preview` (the default; needs the `previews` block in `wrangler.jsonc`, which is there) |
 | Build variables | `BUN_VERSION=1.4.4`, `NODE_VERSION=22`, and `NEXT_PUBLIC_MAPBOX_TOKEN` if you use Mapbox |
 
 **Set `BUN_VERSION=1.4.4`.** Cloudflare's build image defaults to an older
