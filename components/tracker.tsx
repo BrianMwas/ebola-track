@@ -9,7 +9,9 @@ import { trendOf } from "@/lib/status"
 import { en } from "@/lib/strings"
 import { useIsDesktop } from "@/lib/use-media-query"
 import { useSnapshot, type Snapshot } from "@/lib/use-snapshot"
-import { Card, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { Tip } from "@/components/ui/info-tip"
 import { SectionTitle } from "@/components/ui/section-title"
@@ -34,7 +36,7 @@ export function Tracker() {
   if (snapshot.state === "loading") {
     return (
       <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-8">
-        <div className="h-96 animate-pulse rounded-lg bg-muted" aria-label={en.loading} />
+        <Skeleton className="h-96 rounded-lg" aria-label={en.loading} />
       </div>
     )
   }
@@ -42,8 +44,10 @@ export function Tracker() {
     return (
       <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-8">
         <Card role="alert">
-          <CardTitle>{en.loadError}</CardTitle>
-          <p className="text-muted-foreground">{snapshot.message}</p>
+          <CardHeader>
+            <CardTitle>{en.loadError}</CardTitle>
+            <CardDescription>{snapshot.message}</CardDescription>
+          </CardHeader>
         </Card>
       </div>
     )
@@ -141,14 +145,15 @@ function TrackerView({ data }: { data: Snapshot }) {
                     key={selectedZoneId ?? selectedCountry?.iso3}
                     className="absolute top-3 bottom-3 left-3 z-20 w-[300px] overflow-y-auto rounded-lg border border-control bg-background p-4 motion-safe:animate-fade-up xl:w-[330px] [&_header]:pr-10"
                   >
-                    <button
-                      type="button"
+                    <Button
+                      variant="ghost"
+                      size="icon-lg"
                       aria-label={en.zone.close}
                       onClick={() => setSelection(null)}
-                      className="absolute top-2 right-2 flex size-10 items-center justify-center rounded-lg text-ink-2 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                      className="absolute top-2 right-2 text-ink-2"
                     >
                       <HugeiconsIcon icon={Cancel01Icon} size={20} aria-hidden />
-                    </button>
+                    </Button>
                     {detail}
                   </aside>
                 ) : null
@@ -192,8 +197,8 @@ function TrackerView({ data }: { data: Snapshot }) {
             if (!open) setSelection(null)
           }}
         >
-          <SheetContent>
-            <SheetTitle>{selectedZone?.nom ?? selectedCountry?.country}</SheetTitle>
+          <SheetContent side="bottom" className="max-h-[85svh] overflow-y-auto rounded-t-xl px-5 pt-5 pb-10 [&_header]:pr-10">
+            <SheetTitle className="sr-only">{selectedZone?.nom ?? selectedCountry?.country}</SheetTitle>
             {detail}
           </SheetContent>
         </Sheet>

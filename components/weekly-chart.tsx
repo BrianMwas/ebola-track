@@ -1,24 +1,38 @@
 "use client"
 
 import * as React from "react"
+import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts"
 
 import { niceMax } from "@/lib/chart-data"
 import { formatNumber, formatShortDate } from "@/lib/format"
 import type { Weekly } from "@/lib/schema"
 import { en } from "@/lib/strings"
-import { useInViewOnce } from "@/lib/use-media-query"
+import { useInViewOnce, usePrefersReducedMotion } from "@/lib/use-media-query"
 import { cn } from "@/lib/utils"
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { SectionTitle } from "@/components/ui/section-title"
 
+type Row = { week: string; cases: number; recent: boolean }
+
+const config = {
+  recent: { label: en.weekly.recent, color: "var(--chart-2)" },
+  earlier: { label: en.weekly.earlier, color: "var(--chart-1)" },
+} satisfies ChartConfig
+
 /**
- * New confirmed cases per week across all health zones. The last two weeks
- * (the 14-day trend window) are blue; status colours are not used.
+ * New confirmed cases per week across all health zones, on the shadcn Chart. The last
+ * two weeks (the 14-day trend window) are brand blue; status colours are not used.
  */
 export function WeeklyChart({ weekly }: { weekly: Weekly }) {
   const values = weekly.zone_total
   const n = values.length
   const top = niceMax(Math.max(...values))
-  const ticks = [1, 0.75, 0.5, 0.25].map((f) => top * f)
+  const ticks = [0.25, 0.5, 0.75, 1].map((f) => top * f)
+  // The last two weeks are the 14-day trend window.
+  const data: Row[] = values.map((cases, i) => ({ week: weekly.week_ends[i]!, cases, recent: i >= n - 2 }))
+  // A date under every fourth bar, ending on the latest week.
+  const dateTicks = weekly.week_ends.filter((_, i) => i % 4 === (n - 1) % 4)
+  const reducedMotion = usePrefersReducedMotion()
   const peak = Math.max(...values)
   const peakEnd = weekly.week_ends[values.indexOf(peak)]
 
@@ -46,48 +60,46 @@ export function WeeklyChart({ weekly }: { weekly: Weekly }) {
         </p>
       </div>
       <figure className="flex flex-col gap-1.5">
-        <div
-          role="img"
-          aria-label={en.weekly.chartLabel(n, peak, peakEnd, values[n - 1] ?? 0)}
-          className="relative h-56 pl-11"
-        >
-          {ticks.map((t) => (
-            <div
-              key={t}
-              aria-hidden
-              className="absolute right-0 left-11 border-t"
-              style={{ bottom: `${(t / top) * 100}%` }}
-            >
-              <span className="absolute -top-2 -left-11 w-10 text-right text-xs text-muted-foreground">
-                {formatNumber(t)}
-              </span>
-            </div>
-          ))}
-          <div
-            className="relative grid h-full items-end gap-1 border-b border-b-rule"
-            style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}
-          >
-            {values.map((v, i) => (
-              <span
-                key={weekly.week_ends[i]}
-                title={en.weekly.bar(weekly.week_ends[i], v)}
-                className={`origin-bottom motion-safe:animate-grow-up ${i >= n - 2 ? "bg-chart-2" : "bg-chart-1"}`}
-                style={{ height: `${(v / top) * 100}%`, animationDelay: `${i * 35}ms` }}
-              />
-            ))}
-          </div>
-        </div>
-        <div
-          aria-hidden
-          className="grid gap-1 pl-11 text-xs text-muted-foreground"
-          style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}
-        >
-          {weekly.week_ends.map((d, i) => (
-            // The last label grows leftwards so it never pokes past the edge.
-            <span key={d} className={i === n - 1 ? "flex justify-end whitespace-nowrap" : "flex justify-center whitespace-nowrap"}>
-              {i % 4 === (n - 1) % 4 ? formatShortDate(d) : ""}
-            </span>
-          ))}
+        <div role="img" aria-label={en.weekly.chartLabel(n, peak, peakEnd, values[n - 1] ?? 0)} className="h-60">
+          {/* Mounted once in view, so the bars grow in when the reader arrives. */}
+          {seen && (
+            <ChartContainer config={config} className="aspect-auto h-full w-full">
+              <BarChart data={data} margin={{ top: 8, right: 0, bottom: 0, left: 0 }} barCategoryGap={4}>
+                <CartesianGrid vertical={false} />
+                <YAxis
+                  width={44}
+                  domain={[0, top]}
+                  ticks={ticks}
+                  tickFormatter={formatNumber}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <XAxis
+                  dataKey="week"
+                  ticks={dateTicks}
+                  tickFormatter={formatShortDate}
+                  tickLine={false}
+                  axisLine={{ stroke: "var(--rule)" }}
+                  interval={0}
+                />
+                <ChartTooltip
+                  isAnimationActive={false}
+                  content={
+                    <ChartTooltipContent
+                      hideIndicator
+                      labelFormatter={(_, payload) => en.weekly.bar((payload?.[0]?.payload as Row).week, (payload?.[0]?.payload as Row).cases)}
+                      formatter={() => null}
+                    />
+                  }
+                />
+                <Bar dataKey="cases" isAnimationActive={!reducedMotion} animationDuration={700} animationEasing="ease-out">
+                  {data.map((d) => (
+                    <Cell key={d.week} fill={d.recent ? "var(--color-recent)" : "var(--color-earlier)"} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ChartContainer>
+          )}
         </div>
         <figcaption className="flex flex-wrap gap-x-4 gap-y-1 pl-11 text-[13px] text-ink-2">
           <span className="inline-flex items-center gap-1.5">

@@ -235,7 +235,7 @@ export function MapScene({
                 type="button"
                 onClick={() => onSelectCountry(c.iso3)}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-lg border border-[#c9d1db] bg-white py-0.5 text-xs leading-tight text-[#0b1b2e] focus-visible:ring-2 focus-visible:ring-[#1a56f0] focus-visible:outline-none",
+                  "flex items-center gap-1.5 rounded-lg border border-[#cdd3d9] bg-white py-0.5 text-xs leading-tight text-[#202327] focus-visible:ring-2 focus-visible:ring-[#0061a2] focus-visible:outline-none",
                   labelOnLeft(c.marker_point![0])
                     ? "flex-row-reverse pr-0.5 pl-2 text-right"
                     : "pr-2 pl-0.5 text-left"
@@ -247,8 +247,8 @@ export function MapScene({
                   aria-hidden
                   className={
                     c.classification === "outbreak_over"
-                      ? "size-3 rounded-full border-2 border-dashed border-[#5f6b7a]"
-                      : "size-3 rounded-full border-2 border-[#0b1b2e]"
+                      ? "size-3 rounded-full border-2 border-dashed border-[#5f656c]"
+                      : "size-3 rounded-full border-2 border-[#202327]"
                   }
                 />
                 <span>

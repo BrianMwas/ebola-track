@@ -12,12 +12,15 @@ import { useInViewOnce } from "@/lib/use-media-query"
 import { cn } from "@/lib/utils"
 import { StatusMark } from "@/components/status-mark"
 import { TrendArrow } from "@/components/trend-arrow"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { SectionTitle } from "@/components/ui/section-title"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
-  SortableDataTable,
+  DataTable,
   type DataColumn,
   type SortState,
-} from "@/components/sortable-data-table/sortable-data-table"
+} from "@/components/data-table"
 
 const TOP = 10
 const SPARK_WEEKS = 12
@@ -89,14 +92,16 @@ export function ZoneTable({
           <span className="flex items-center gap-2">
             <StatusMark status={z.status} />
             <span className="sr-only">{en.status[z.status]}:</span>
-            <button
-              type="button"
-              onClick={() => onSelect(z.id)}
-              className="min-h-8 text-left font-semibold hover:text-link focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-            >
-              {z.nom}
-            </button>
-            <span className="text-[13px] text-muted-foreground">{z.province}</span>
+            <span className="flex flex-wrap items-baseline gap-x-2">
+              <button
+                type="button"
+                onClick={() => onSelect(z.id)}
+                className="min-h-8 text-left font-semibold hover:text-link focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+              >
+                {z.nom}
+              </button>
+              <span className="text-[13px] whitespace-nowrap text-muted-foreground">{z.province}</span>
+            </span>
           </span>
         ),
       },
@@ -143,14 +148,14 @@ export function ZoneTable({
           {all || filtering ? en.zoneTable.title : en.zoneTable.titleTop}
         </SectionTitle>
         {zones.length > TOP && !filtering && (
-          <button
-            type="button"
+          <Button
+            variant="link"
             onClick={() => setAll((v) => !v)}
             aria-expanded={all}
-            className="min-h-11 text-[15px] font-semibold text-link hover:text-link-hover"
+            className="h-11 px-0 text-[15px] font-semibold text-link hover:text-link-hover"
           >
             {all ? en.zoneTable.showTop(TOP) : en.zoneTable.showAll(zones.length)}
-          </button>
+          </Button>
         )}
       </div>
 
@@ -159,15 +164,20 @@ export function ZoneTable({
           <label htmlFor={searchId} className="text-[13px] font-semibold text-ink-2">
             {en.zoneTable.search}
           </label>
-          <div className="flex min-h-10 items-center gap-2 rounded-lg border border-input px-2.5 text-muted-foreground focus-within:ring-2 focus-within:ring-ring">
-            <HugeiconsIcon icon={Search01Icon} size={18} aria-hidden />
-            <input
+          <div className="relative">
+            <HugeiconsIcon
+              icon={Search01Icon}
+              size={18}
+              aria-hidden
+              className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground"
+            />
+            <Input
               id={searchId}
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={en.zoneTable.searchPlaceholder}
-              className="min-w-0 flex-1 bg-transparent text-[15px] text-foreground outline-none"
+              className="h-10 pl-9 text-[15px] md:text-[15px]"
             />
           </div>
         </div>
@@ -175,42 +185,37 @@ export function ZoneTable({
           <span id={`${searchId}-status`} className="text-[13px] font-semibold text-ink-2">
             {en.zoneTable.status}
           </span>
-          <div
-            role="group"
+          <ToggleGroup
             aria-labelledby={`${searchId}-status`}
-            className="flex flex-wrap overflow-hidden rounded-lg border border-control"
+            variant="outline"
+            spacing={0}
+            value={[status ?? "all"]}
+            onValueChange={(v) => setStatus(v[0] && v[0] !== "all" ? (v[0] as ZoneStatus) : null)}
+            className="flex-wrap"
           >
-            {[null, ...STATUSES].map((st, i) => (
-              <button
-                key={st ?? "all"}
-                type="button"
-                aria-pressed={status === st}
-                onClick={() => setStatus(st)}
-                className={cn(
-                  "inline-flex min-h-10 items-center gap-1.5 px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
-                  i > 0 && "border-l border-control",
-                  status === st
-                    ? "bg-primary font-semibold text-primary-foreground"
-                    : "bg-background font-medium text-foreground hover:bg-muted"
-                )}
+            {(["all", ...STATUSES] as const).map((st) => (
+              <ToggleGroupItem
+                key={st}
+                value={st}
+                className="h-10 gap-1.5 border-control px-3 font-medium aria-pressed:bg-primary aria-pressed:font-semibold aria-pressed:text-primary-foreground aria-pressed:hover:bg-primary/90"
               >
-                {st && <StatusMark status={st} />}
-                {st ? en.zoneTable.statusShort[st] : en.zoneTable.all}
-              </button>
+                {st !== "all" && <StatusMark status={st} />}
+                {st !== "all" ? en.zoneTable.statusShort[st] : en.zoneTable.all}
+              </ToggleGroupItem>
             ))}
-          </div>
+          </ToggleGroup>
         </div>
         <p aria-live="polite" className="flex min-h-10 items-center gap-3 text-sm text-ink-2">
           {filtering && en.zoneTable.count(rows.length, zones.length)}
           {filtering && (
-            <button type="button" onClick={clear} className="font-semibold text-link hover:text-link-hover">
+            <Button variant="link" onClick={clear} className="h-auto px-0 font-semibold text-link hover:text-link-hover">
               {en.zoneTable.clear}
-            </button>
+            </Button>
           )}
         </p>
       </div>
 
-      <SortableDataTable
+      <DataTable
         rows={rows}
         columns={columns}
         rowKey="id"
@@ -227,7 +232,7 @@ export function ZoneTable({
 function Sparkline({ values }: { values: number[] }) {
   const peak = Math.max(1, ...values)
   return (
-    <span role="img" aria-label={en.zoneTable.sparkLabel(values)} className="flex h-6.5 w-30 items-end gap-0.5">
+    <span role="img" aria-label={en.zoneTable.sparkLabel(values)} className="flex h-6.5 w-20 items-end gap-px sm:w-30 sm:gap-0.5">
       {values.map((v, i) => (
         <span
           key={i}

@@ -2,22 +2,26 @@
 
 import * as React from "react"
 import dynamic from "next/dynamic"
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 
 import { dailyNewBars } from "@/lib/chart-data"
 import { formatNumber, formatShortDate } from "@/lib/format"
 import type { Latest, ZoneProperties } from "@/lib/schema"
 import { en } from "@/lib/strings"
 import { useTimeseries } from "@/lib/use-snapshot"
-import { Disclosure } from "@/components/ui/disclosure"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { WatchCountdown } from "@/components/charts/watch-countdown"
 import { STATUS_TEXT } from "@/components/map/map-style"
 import { StatusMark } from "@/components/status-mark"
 import { TrendArrow } from "@/components/trend-arrow"
-import { MetricCard } from "@/components/metric-card/metric-card"
+import { MetricCard } from "@/components/metric-card"
 
 const ZoneTrendChart = dynamic(() => import("@/components/charts/zone-trend-chart"), {
   ssr: false,
-  loading: () => <div className="h-44 animate-pulse rounded-lg bg-muted" aria-hidden />,
+  loading: () => <Skeleton className="h-44 rounded-lg" aria-hidden />,
 })
 
 export function ZonePanel({
@@ -61,8 +65,8 @@ export function ZonePanel({
         </p>
         {(zone.stale || zone.revised) && (
           <div className="flex flex-wrap gap-1.5">
-            {zone.stale && <Tag>{en.stale}</Tag>}
-            {zone.revised && <Tag>{en.revisedBadge}</Tag>}
+            {zone.stale && <Badge variant="outline" className="border-control text-ink-2">{en.stale}</Badge>}
+            {zone.revised && <Badge variant="outline" className="border-control text-ink-2">{en.revisedBadge}</Badge>}
           </div>
         )}
         {zone.stale && (
@@ -121,11 +125,17 @@ export function ZonePanel({
       )}
 
       {notes.length > 0 && (
-        <Disclosure summary={en.zone.aboutStatus}>
+        <Collapsible className="text-sm">
+          <CollapsibleTrigger className="group inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-lg font-semibold text-link outline-none select-none hover:text-link-hover focus-visible:ring-2 focus-visible:ring-ring">
+            <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden className="transition-transform group-data-panel-open:rotate-90 motion-reduce:transition-none" />
+            {en.zone.aboutStatus}
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-1 flex flex-col gap-2 pl-5 leading-relaxed text-ink-2">
           {notes.map((n) => (
             <p key={n}>{n}</p>
           ))}
-        </Disclosure>
+          </CollapsibleContent>
+        </Collapsible>
       )}
 
       <footer className="flex flex-col gap-0.5 border-t pt-3 text-[13px] leading-relaxed text-muted-foreground">
@@ -135,14 +145,6 @@ export function ZonePanel({
         </a>
       </footer>
     </article>
-  )
-}
-
-function Tag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded-lg border border-control px-1.5 py-0.5 text-[13px] font-semibold text-ink-2">
-      {children}
-    </span>
   )
 }
 

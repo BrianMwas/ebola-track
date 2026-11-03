@@ -1,14 +1,15 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono, DM_Sans } from "next/font/google"
+import { Geist_Mono, Karla, Quicksand } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { en } from "@/lib/strings"
 import { cn } from "@/lib/utils";
 
-const dmSansHeading = DM_Sans({subsets:['latin'],variable:'--font-heading'});
+// Titles: Quicksand. Body text: Karla. Both are variable fonts, so every weight is available.
+const fontHeading = Quicksand({ subsets: ["latin"], variable: "--font-heading" })
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'})
+const fontSans = Karla({ subsets: ["latin"], variable: "--font-sans" })
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -32,7 +33,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", geist.variable, dmSansHeading.variable)}
+      className={cn("antialiased", "font-sans", fontSans.variable, fontHeading.variable, fontMono.variable)}
     >
       <body>
         <ThemeProvider>
