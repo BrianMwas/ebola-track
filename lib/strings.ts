@@ -62,9 +62,9 @@ export const en = {
   },
 
   freshness(asOf: string) {
-    return `Data as of ${formatDate(asOf)} · updated daily`
+    return `Data as of ${formatDate(asOf)} · we check for new reports daily`
   },
-  freshnessStale: "Over 2 days old. Newer bulletins may exist.",
+  freshnessStale: "This is the most recent report from the source. Reports can be a few days apart.",
 
   map: {
     label: "Map of Ebola status by health zone",
