@@ -7,8 +7,7 @@ import type { Latest, Summary, Weekly, Zones } from "@/lib/schema"
 import { trendOf } from "@/lib/status"
 import { en } from "@/lib/strings"
 import { FreshnessLine } from "@/components/freshness-line"
-import { STATUS_COLORS } from "@/components/map/map-style"
-import { StatsBand, type Stat } from "@/components/stats-band/stats-band"
+import { HeadlineStats, type Stat } from "@/components/headline-stats"
 
 /** Days per bar in the "active health zones" histogram, and how many bars. */
 const BIN_DAYS = 7
@@ -42,10 +41,7 @@ export function Overview({
           {en.disclaimer}
         </p>
       </div>
-      {/* Inked histogram bars are active zones, so they take the active status colour. */}
-      <div style={{ "--stats-ink": STATUS_COLORS.active } as React.CSSProperties}>
-        <StatsBand stats={stats} layout="divided" locale="en" />
-      </div>
+      <HeadlineStats stats={stats} />
     </section>
   )
 }

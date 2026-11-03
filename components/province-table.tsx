@@ -10,7 +10,7 @@ import { useInViewOnce } from "@/lib/use-media-query"
 import { cn } from "@/lib/utils"
 import { SectionTitle } from "@/components/ui/section-title"
 import { StatusMark } from "@/components/status-mark"
-import { SortableDataTable, type DataColumn } from "@/components/sortable-data-table/sortable-data-table"
+import { DataTable, type DataColumn } from "@/components/data-table"
 
 /** DRC provinces with cases: active zones and new cases. Its "?" explains deaths with no health zone. */
 export function ProvinceTable({ rows, drc }: { rows: ProvinceRow[]; drc: CountrySummary | undefined }) {
@@ -75,7 +75,7 @@ export function ProvinceTable({ rows, drc }: { rows: ProvinceRow[]; drc: Country
       >
         {en.provinces.title}
       </SectionTitle>
-      <SortableDataTable
+      <DataTable
         rows={rows}
         columns={columns}
         rowKey="province"

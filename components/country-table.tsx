@@ -10,7 +10,7 @@ import { StatusMark } from "@/components/status-mark"
 import { TrendArrow } from "@/components/trend-arrow"
 import { Tip } from "@/components/ui/info-tip"
 import { SectionTitle } from "@/components/ui/section-title"
-import { SortableDataTable, type DataColumn } from "@/components/sortable-data-table/sortable-data-table"
+import { DataTable, type DataColumn } from "@/components/data-table"
 
 type Row = {
   iso3: string
@@ -120,7 +120,7 @@ export function CountryTable({
         </SectionTitle>
         <Tip>{en.countries.tip}</Tip>
       </div>
-      <SortableDataTable
+      <DataTable
         rows={rows}
         columns={columns}
         rowKey="iso3"

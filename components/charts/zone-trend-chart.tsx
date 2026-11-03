@@ -1,45 +1,34 @@
 "use client"
 
 import * as React from "react"
-import {
-  Bar,
-  BarChart,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts"
+import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts"
 
 import type { DailyBar } from "@/lib/chart-data"
 import { formatDate, formatNumber, formatShortDate } from "@/lib/format"
 import { en } from "@/lib/strings"
 import { usePrefersReducedMotion } from "@/lib/use-media-query"
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
+
+const config = {
+  recent: { label: en.zone.chartLast14, color: "var(--chart-2)" },
+  earlier: { label: en.zone.chartEarlier, color: "var(--chart-1)" },
+} satisfies ChartConfig
 
 /**
- * Daily new confirmed cases by report date, with the last 14 days
- * emphasised in blue and earlier days in pale blue-grey. Neutral colours on purpose:
- * the status colours on this site mean status and nothing else.
- *
- * Stand-in for the mebius "charts-overview" card until its registry can be
- * reached; it takes the same prepared bars (lib/chart-data.ts).
+ * Daily new confirmed cases by report date, on the shadcn Chart. The last 14 days are
+ * brand blue and earlier days pale blue. Status colours mean status and nothing else.
  */
-export default function ZoneTrendChart({
-  bars,
-  summary,
-}: {
-  bars: DailyBar[]
-  summary: string
-}) {
+export default function ZoneTrendChart({ bars, summary }: { bars: DailyBar[]; summary: string }) {
   const reducedMotion = usePrefersReducedMotion()
-  const ticks = [bars[0]?.date, bars[Math.floor(bars.length / 2)]?.date, bars.at(-1)?.date]
-    .filter(Boolean) as string[]
+  const ticks = [bars[0]?.date, bars[Math.floor(bars.length / 2)]?.date, bars.at(-1)?.date].filter(
+    Boolean
+  ) as string[]
 
   return (
     <figure className="flex flex-col gap-3">
       <figcaption className="text-xs text-muted-foreground">{en.zone.chartTitle}</figcaption>
-      <div role="img" aria-label={`${en.zone.chartTitle}. ${summary}`} className="h-36">
-        <ResponsiveContainer width="100%" height="100%">
+      <div role="img" aria-label={`${en.zone.chartTitle}. ${summary}`}>
+        <ChartContainer config={config} className="aspect-auto h-36 w-full">
           <BarChart data={bars} margin={{ top: 4, right: 0, bottom: 0, left: 0 }} barCategoryGap={1}>
             <XAxis
               dataKey="date"
@@ -47,38 +36,29 @@ export default function ZoneTrendChart({
               tickFormatter={formatShortDate}
               tickLine={false}
               axisLine={{ stroke: "var(--border)" }}
-              tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
+              tick={{ fontSize: 10 }}
               interval="preserveStartEnd"
             />
-            <YAxis
-              width={30}
-              allowDecimals={false}
-              tickLine={false}
-              axisLine={false}
-              tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
-            />
-            <Tooltip
-              cursor={{ fill: "var(--muted)" }}
-              content={({ active, payload }) => (
-                <BarTooltip active={active} bar={payload?.[0]?.payload as DailyBar | undefined} />
-              )}
+            <YAxis width={30} allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
+            <ChartTooltip
               isAnimationActive={false}
-            />
-            <Bar
-              dataKey="new"
-              isAnimationActive={!reducedMotion}
-              animationDuration={600}
-              animationEasing="ease-out"
-            >
-              {bars.map((b) => (
-                <Cell
-                  key={b.date}
-                  fill={b.recent ? "var(--chart-2)" : "var(--chart-1)"}
+              content={
+                <ChartTooltipContent
+                  hideIndicator
+                  labelFormatter={(_, payload) => formatDate((payload?.[0]?.payload as DailyBar).date)}
+                  formatter={(value) =>
+                    value == null ? en.zone.chartNoReport : en.zone.chartNew(formatNumber(value as number))
+                  }
                 />
+              }
+            />
+            <Bar dataKey="new" isAnimationActive={!reducedMotion} animationDuration={600} animationEasing="ease-out">
+              {bars.map((b) => (
+                <Cell key={b.date} fill={b.recent ? "var(--color-recent)" : "var(--color-earlier)"} />
               ))}
             </Bar>
           </BarChart>
-        </ResponsiveContainer>
+        </ChartContainer>
       </div>
       <div className="flex gap-5 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
@@ -91,17 +71,5 @@ export default function ZoneTrendChart({
         </span>
       </div>
     </figure>
-  )
-}
-
-function BarTooltip({ active, bar }: { active?: boolean; bar?: DailyBar }) {
-  if (!active || !bar) return null
-  return (
-    <div className="rounded-md bg-popover px-2 py-1 text-xs text-popover-foreground shadow-md ring-1 ring-foreground/10">
-      <div className="font-medium">{formatDate(bar.date)}</div>
-      <div>
-        {bar.new === null ? en.zone.chartNoReport : en.zone.chartNew(formatNumber(bar.new))}
-      </div>
-    </div>
   )
 }

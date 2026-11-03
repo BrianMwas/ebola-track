@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Calendar03Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { enGB } from "react-day-picker/locale"
 
 import { contactWindow, infectionWindow, INCUBATION_MAX_DAYS, INCUBATION_MIN_DAYS } from "@/lib/exposure"
 import { formatDate, formatShortDate } from "@/lib/format"
@@ -11,7 +12,8 @@ import { en } from "@/lib/strings"
 import { InfoTip } from "@/components/ui/info-tip"
 import { cn } from "@/lib/utils"
 import { useToday } from "@/lib/use-today"
-import { Calendar } from "@/components/calendar/calendar"
+import { Calendar } from "@/components/ui/calendar"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 type Mode = "contact" | "sick"
 type Result = {
@@ -68,7 +70,6 @@ export function ExposureWindow() {
   const todayDate = useToday()
   const today = localIsoDate(todayDate ?? new Date())
   const date = dates[mode]
-  const picked = ISO.test(date) ? fromIso(date) : undefined
   const valid = ISO.test(date)
   const r = valid ? result(mode, date, today) : null
 
@@ -94,38 +95,36 @@ export function ExposureWindow() {
         <p className="text-sm text-muted-foreground">{en.exposure.subtitle}</p>
       </div>
 
-      <div role="group" aria-label={en.exposure.mode} className="grid grid-cols-2 overflow-hidden rounded-lg border border-control">
+      <Tabs value={mode} onValueChange={(v) => setMode(v as Mode)} className="gap-3.5">
+        <TabsList aria-label={en.exposure.mode} className="grid h-11! w-full grid-cols-2">
+          <TabsTrigger value="contact" className="text-sm font-semibold">
+            {en.exposure.contact}
+          </TabsTrigger>
+          <TabsTrigger value="sick" className="text-sm font-semibold">
+            {en.exposure.sick}
+          </TabsTrigger>
+        </TabsList>
         {(["contact", "sick"] as const).map((m) => (
-          <button
-            key={m}
-            type="button"
-            aria-pressed={mode === m}
-            onClick={() => setMode(m)}
-            className={cn(
-              "min-h-11 px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
-              m === "sick" && "border-l border-control",
-              mode === m ? "bg-primary text-primary-foreground" : "bg-background text-foreground hover:bg-muted"
-            )}
-          >
-            {m === "contact" ? en.exposure.contact : en.exposure.sick}
-          </button>
+          // One panel and calendar per mode keeps each mode's month and selection.
+          <TabsContent key={m} value={m} className="flex flex-col gap-2">
+            <p id={`${labelId}-${m}`} className="text-[15px] font-semibold">
+              {m === "contact" ? en.exposure.contactDate : en.exposure.onsetDate}
+            </p>
+            <Calendar
+              aria-labelledby={`${labelId}-${m}`}
+              mode="single"
+              selected={ISO.test(dates[m]) ? fromIso(dates[m]) : undefined}
+              defaultMonth={ISO.test(dates[m]) ? fromIso(dates[m]) : todayDate}
+              onSelect={(d) => d && setDates((all) => ({ ...all, [m]: localIsoDate(d) }))}
+              // Future days are blocked.
+              disabled={todayDate ? { after: todayDate } : undefined}
+              endMonth={todayDate}
+              locale={enGB}
+              className="mx-auto rounded-lg border p-2 [--cell-size:--spacing(9)]"
+            />
+          </TabsContent>
         ))}
-      </div>
-
-      <div role="group" aria-labelledby={labelId} className="flex flex-col gap-2">
-        <p id={labelId} className="text-[15px] font-semibold">
-          {mode === "contact" ? en.exposure.contactDate : en.exposure.onsetDate}
-        </p>
-        {/* One calendar per mode keeps each mode's month and selection. Future days are blocked. */}
-        <Calendar
-          key={mode}
-          value={picked}
-          onChange={(d) => setDates((all) => ({ ...all, [mode]: localIsoDate(d) }))}
-          maxDate={todayDate}
-          locale="en-GB"
-          showToday
-        />
-      </div>
+      </Tabs>
 
       <div aria-live="polite" className="flex flex-col gap-2.5">
         {!valid && <p className="text-[15px] text-ink-2">{en.exposure.prompt}</p>}
