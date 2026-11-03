@@ -3,8 +3,8 @@
 > **PUBLIC_LAUNCH_BLOCKED**
 >
 > This is a private preview. Search indexing stays off (link previews and
-> Google Analytics are enabled). Permission to publish the INRB/INSP
-> epidemiological data is still being requested. The data is preliminary;
+> Google Analytics are enabled). We are in talks with INRB/INSP about publishing their
+> epidemiological data. The data is preliminary;
 > INSP's terms ask for distribution terms to be confirmed before external
 > republication. Remove this block only when written permission is on file.
 
