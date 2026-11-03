@@ -11,6 +11,7 @@
         "@tanstack/react-table": "8.21.3",
         "class-variance-authority": "^0.7.1",
         "cn": "^0.5.0",
+        "country-flag-icons": "^1.6.20",
         "date-fns": "^4.4.0",
         "mapbox-gl": "3.33.0",
         "maplibre-gl": "6.14.0",
@@ -805,6 +806,8 @@
     "cookie": ["cookie@1.1.1", "", {}, "sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ=="],
 
     "cookies": ["cookies@0.8.0", "", { "dependencies": { "depd": "~2.0.0", "keygrip": "~1.1.0" } }, "sha512-8aPsApQfebXnuI+537McwYsDtjVxGm8gTIzQI3FDW6t5t/DAhERxtnbEPN/8RX+uZthoz4eCOgloXaE5cYyNow=="],
+
+    "country-flag-icons": ["country-flag-icons@1.6.20", "", {}, "sha512-py8JiEKzjhYw6HPJ0L7SxLgCYim36UPRTZX43/kqGueUCZLSvnrqAiwW8HtQibur7mdkFQUkjOgdK+o/9FBtaw=="],
 
     "cross-spawn": ["cross-spawn@7.0.6", "", { "dependencies": { "path-key": "^3.1.0", "shebang-command": "^2.0.0", "which": "^2.0.1" } }, "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA=="],
 

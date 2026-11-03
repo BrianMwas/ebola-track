@@ -1,5 +1,6 @@
 "use client"
 
+import { Flag } from "@/components/flag"
 import * as React from "react"
 
 import { formatNumber } from "@/lib/format"
@@ -57,10 +58,11 @@ export function CountryTable({
           <button
             type="button"
             onClick={() => onSelect(r.iso3)}
-            className="inline-flex min-h-8 items-center gap-2 text-left font-bold hover:text-link focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            className="group inline-flex min-h-8 items-center gap-2 text-left font-bold hover:text-link focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
-            <SituationMark classification={r.classification} />
+            <Flag iso3={r.iso3} />
             {r.country}
+            <SituationMark classification={r.classification} />
           </button>
         ),
       },
@@ -78,13 +80,17 @@ export function CountryTable({
       {
         key: "confirmed_cases",
         label: en.countries.cases,
-        render: (v) => <span className="font-semibold">{formatNumber(v as number)}</span>,
+        render: (v) => (
+          <span className="font-semibold">{formatNumber(v as number)}</span>
+        ),
       },
       {
         key: "confirmed_deaths",
         label: en.countries.deaths,
         phone: false,
-        render: (v) => <span className="text-ink-2">{formatNumber(v as number)}</span>,
+        render: (v) => (
+          <span className="text-ink-2">{formatNumber(v as number)}</span>
+        ),
       },
       {
         key: "new_14d",
@@ -109,7 +115,11 @@ export function CountryTable({
   )
 
   return (
-    <section id="countries" className="flex scroll-mt-4 flex-col gap-3" aria-labelledby="countries-title">
+    <section
+      id="countries"
+      className="flex scroll-mt-4 flex-col gap-3"
+      aria-labelledby="countries-title"
+    >
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
         <SectionTitle
           id="countries-title"
@@ -132,7 +142,13 @@ export function CountryTable({
           {noCases.map((c, i) => (
             <React.Fragment key={c.iso3}>
               {i > 0 && " · "}
-              <a href={c.source_url} target="_blank" rel="noreferrer" title={c.note}>
+              <a
+                href={c.source_url}
+                target="_blank"
+                rel="noreferrer"
+                title={c.note}
+              >
+                <Flag iso3={c.iso3} className="mr-1 align-[-0.1em]" />
                 {en.countries.noCasesLine(c.country, c.as_of)}
               </a>
             </React.Fragment>
@@ -143,14 +159,41 @@ export function CountryTable({
   )
 }
 
-/** Same marks as the map: a status square for local spread, rings for country-level markers. */
-function SituationMark({ classification }: { classification: CountrySummary["classification"] }) {
-  if (classification === "local_transmission") return <StatusMark status="active" />
-  if (classification === "outbreak_over") {
-    return <span aria-hidden className="size-2.5 shrink-0 rounded-full border-2 border-dashed border-muted-foreground" />
-  }
-  if (classification === "imported_cluster") {
-    return <span aria-hidden className="size-2.5 shrink-0 rounded-full border-2 border-foreground" />
-  }
-  return null
+/**
+ * Same marks as the map: a status square for local spread, rings for
+ * country-level markers. Hovering (or focusing the row) shows what it means.
+ */
+function SituationMark({
+  classification,
+}: {
+  classification: CountrySummary["classification"]
+}) {
+  let mark: React.ReactNode = null
+  if (classification === "local_transmission")
+    mark = <StatusMark status="active" />
+  else if (classification === "outbreak_over")
+    mark = (
+      <span className="block size-2.5 rounded-full border-2 border-dashed border-muted-foreground" />
+    )
+  else if (classification === "imported_cluster")
+    mark = (
+      <span className="block size-2.5 rounded-full border-2 border-foreground" />
+    )
+  if (!mark) return null
+
+  const tip = en.countries.markTip[classification]
+  return (
+    <span
+      className="group/mark relative inline-flex shrink-0 items-center p-1"
+      aria-hidden
+    >
+      {mark}
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute bottom-full -left-1 z-20 mb-1 w-max max-w-56 rounded-md bg-foreground px-2 py-1 text-xs font-medium text-background opacity-0 shadow-md transition-opacity group-hover/mark:opacity-100 group-focus-visible:opacity-100"
+      >
+        {tip}
+      </span>
+    </span>
+  )
 }

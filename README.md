@@ -1,12 +1,7 @@
 # East Africa Ebola status (Bundibugyo outbreak, 2026)
 
-> **PUBLIC_LAUNCH_BLOCKED**
->
-> This is a private preview. Do not deploy it publicly, and do not add public
-> analytics or social cards. Permission to publish the INRB/INSP
-> epidemiological data is still being requested. The data is preliminary;
-> INSP's terms ask for distribution terms to be confirmed before external
-> republication. Remove this block only when written permission is on file.
+> **Data note:** case data comes from INRB/INSP and is preliminary. INSP asks
+> for attribution and citation of the report number and date.
 
 A static web app that answers three questions quickly: is Ebola near me, is it
 growing, and what should I do. Health zones are coloured by how recently they
@@ -61,11 +56,7 @@ requests.
 The build is a static export (`out/`, about 140 files), served by Cloudflare
 Workers static assets with no Worker script. `wrangler.jsonc` points at
 `out/`; `public/_headers` sets caching (`latest.json` never cached, hashed
-files cached for a year) and `noindex` on every response.
-
-**Keep it private until permission is on file** (see `PUBLIC_LAUNCH_BLOCKED`
-above): put the deployment behind Cloudflare Access (Zero Trust → Access →
-Applications) before sharing the URL.
+files cached for a year).
 
 From a machine:
 

@@ -1,5 +1,6 @@
 "use client"
 
+import { Flag } from "@/components/flag"
 import * as React from "react"
 
 import type { CountrySummary, Zones, Context } from "@/lib/schema"
@@ -252,7 +253,10 @@ export function MapScene({
                   }
                 />
                 <span>
-                  <span className="font-medium">{c.country}</span>
+                  <span className="inline-flex items-center gap-1 font-medium">
+                    <Flag iso3={c.iso3} />
+                    {c.country}
+                  </span>
                   <span className="hidden sm:inline">
                     <br />
                     {c.marker_label}

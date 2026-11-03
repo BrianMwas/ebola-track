@@ -2,7 +2,6 @@ import { Radar01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 
 import { en } from "@/lib/strings"
-import { Badge } from "@/components/ui/badge"
 
 export const SECTIONS = [
   { id: "countries", label: en.nav.countries },
@@ -20,9 +19,6 @@ export function SiteHeader() {
         <a href="#top" className="flex min-h-11 items-center gap-2.5 text-foreground hover:text-foreground">
           <HugeiconsIcon icon={Radar01Icon} size={24} strokeWidth={1.8} className="text-link" aria-hidden />
           <span className="font-heading text-lg font-bold tracking-[-0.01em]">{en.appName}</span>
-          <Badge variant="outline" className="border-control font-semibold text-muted-foreground">
-            {en.privatePreview}
-          </Badge>
         </a>
         <nav aria-label={en.nav.label} className="hidden flex-wrap gap-x-5 text-[15px] font-medium md:flex">
           {SECTIONS.map((s) => (
