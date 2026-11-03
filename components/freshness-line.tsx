@@ -6,7 +6,7 @@ import type { Latest } from "@/lib/schema"
 import { isDatasetStale } from "@/lib/status"
 import { en } from "@/lib/strings"
 
-/** "Data as of … · updated daily"; a warning when stale. Release and check time live in About these numbers. */
+/** "Data as of … · we check daily"; a note when the latest report is a few days old. Release and check time live in About these numbers. */
 export function FreshnessLine({ latest }: { latest: Latest }) {
   // Rendered only on the client, after the snapshot has loaded.
   const [now, setNow] = React.useState(() => new Date())
