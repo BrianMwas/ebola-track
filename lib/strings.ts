@@ -343,6 +343,7 @@ export const en = {
     hotlines: [
       {
         country: "Uganda",
+        iso3: "UGA",
         number: "0800 100 066",
         extra: "or free SMS to 6767",
         source_name: "Ministry of Health, Uganda",
@@ -350,6 +351,7 @@ export const en = {
       },
       {
         country: "Kenya",
+        iso3: "KEN",
         number: "719",
         extra: "or dial *719#, WhatsApp 0700 719 719",
         source_name: "Ministry of Health, via The Star, 7 Oct 2026",
@@ -357,15 +359,17 @@ export const en = {
       },
       {
         country: "Tanzania",
+        iso3: "TZA",
         number: "199",
         extra: null,
         source_name: "Travel Advisory No. 18, 17 Oct 2026, via The Citizen",
         source_url:
           "https://www.thecitizen.co.tz/tanzania/news/national/tanzania-tightens-ebola-screening-after-kenya-confirms-three-cases-5635806",
       },
-      { country: "DRC", number: null, extra: null, source_name: null, source_url: null },
+      { country: "DRC", iso3: "COD", number: null, extra: null, source_name: null, source_url: null },
     ] as {
       country: string
+      iso3: string
       number: string | null
       extra: string | null
       source_name: string | null

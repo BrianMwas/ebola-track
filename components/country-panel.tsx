@@ -1,4 +1,5 @@
 import { formatNumber } from "@/lib/format"
+import { Flag } from "@/components/flag"
 import type { CountrySummary } from "@/lib/schema"
 import { en } from "@/lib/strings"
 
@@ -9,8 +10,9 @@ export function CountryPanel({ country }: { country: CountrySummary }) {
       <header className="flex flex-col gap-2">
         <h2
           id={`country-${country.iso3}`}
-          className="font-heading text-2xl leading-tight font-bold tracking-[-0.02em]"
+          className="flex items-center gap-2.5 font-heading text-2xl leading-tight font-bold tracking-[-0.02em]"
         >
+          <Flag iso3={country.iso3} />
           {country.country}
         </h2>
         <p className="text-[15px] leading-relaxed">{country.situation}</p>

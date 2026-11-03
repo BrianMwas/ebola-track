@@ -1,4 +1,5 @@
 import { Call02Icon } from "@hugeicons/core-free-icons"
+import { Flag } from "@/components/flag"
 import { HugeiconsIcon } from "@hugeicons/react"
 
 import { en } from "@/lib/strings"
@@ -58,6 +59,7 @@ export function Guide() {
                 .filter((h) => h.source_url)
                 .map((h) => (
                   <li key={h.country}>
+                    <Flag iso3={h.iso3} className="mr-1 align-[-0.1em]" />
                     {h.country}:{" "}
                     <a href={h.source_url!} target="_blank" rel="noreferrer">
                       {h.source_name}
@@ -71,7 +73,10 @@ export function Guide() {
           {en.guide.hotlines.map((h) => (
             <li key={h.country} className="flex flex-col text-[15px]">
               <span className="flex justify-between gap-3">
-                <span>{h.country}</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Flag iso3={h.iso3} />
+                  {h.country}
+                </span>
                 {h.number ? (
                   <a
                     href={`tel:${h.number.replace(/\s/g, "")}`}

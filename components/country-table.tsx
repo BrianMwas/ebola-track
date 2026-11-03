@@ -1,5 +1,6 @@
 "use client"
 
+import { Flag } from "@/components/flag"
 import * as React from "react"
 
 import { formatNumber } from "@/lib/format"
@@ -60,6 +61,7 @@ export function CountryTable({
             className="inline-flex min-h-8 items-center gap-2 text-left font-bold hover:text-link focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
             <SituationMark classification={r.classification} />
+            <Flag iso3={r.iso3} />
             {r.country}
           </button>
         ),
@@ -133,6 +135,7 @@ export function CountryTable({
             <React.Fragment key={c.iso3}>
               {i > 0 && " · "}
               <a href={c.source_url} target="_blank" rel="noreferrer" title={c.note}>
+                <Flag iso3={c.iso3} className="mr-1 align-[-0.1em]" />
                 {en.countries.noCasesLine(c.country, c.as_of)}
               </a>
             </React.Fragment>
