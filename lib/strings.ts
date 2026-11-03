@@ -63,7 +63,8 @@ export const en = {
   freshness(asOf: string) {
     return `Data as of ${formatDate(asOf)} · we check for new reports daily`
   },
-  freshnessStale: "This is the most recent report from the source. Reports can be a few days apart.",
+  freshnessStale:
+    "This is the most recent report from the source. Reports can be a few days apart.",
 
   map: {
     label: "Map of Ebola status by health zone",
@@ -184,7 +185,8 @@ export const en = {
     new14Context(weeks: number) {
       return `New cases reported each week, last ${weeks} weeks`
     },
-    activeContext: "Zones by weeks since their last case; coloured bars are active (21 days or less)",
+    activeContext:
+      "Zones by weeks since their last case; coloured bars are active (21 days or less)",
     activeNote(tracked: number, provinces: number) {
       return `of ${tracked} in the reports, in ${provinces} ${provinces === 1 ? "province" : "provinces"}`
     },
@@ -200,6 +202,15 @@ export const en = {
       imported_cluster: "Imported cluster",
       imported: "Imported case",
       medevac: "Medevac",
+    } as Record<string, string>,
+    /** Hover text for the mark after a country name (same marks as the map legend). */
+    markTip: {
+      local_transmission:
+        "Spreading locally: new cases are passing from person to person in this country",
+      outbreak_over:
+        "Outbreak over: the national health authority has declared it over. No new cases.",
+      imported_cluster:
+        "Imported cluster: cases that arrived from abroad, with some spread among contacts",
     } as Record<string, string>,
     cases: "Confirmed cases",
     deaths: "Deaths",
@@ -279,7 +290,12 @@ export const en = {
     searchPlaceholder: "Zone or province",
     status: "Status",
     all: "All",
-    statusShort: { active: "Active", watch: "Watch", cleared: "Cleared", never: "No cases" } satisfies Record<ZoneStatus, string>,
+    statusShort: {
+      active: "Active",
+      watch: "Watch",
+      cleared: "Cleared",
+      never: "No cases",
+    } satisfies Record<ZoneStatus, string>,
     allProvinces: "All provinces",
     count(shown: number, total: number) {
       return `Showing ${shown} of ${total}`
@@ -355,7 +371,8 @@ export const en = {
         number: "719",
         extra: "or dial *719#, WhatsApp 0700 719 719",
         source_name: "Ministry of Health, via The Star, 7 Oct 2026",
-        source_url: "https://www.the-star.co.ke/news/2026-10-07-ebola-fears-call-these-government-hotlines",
+        source_url:
+          "https://www.the-star.co.ke/news/2026-10-07-ebola-fears-call-these-government-hotlines",
       },
       {
         country: "Tanzania",
@@ -366,7 +383,14 @@ export const en = {
         source_url:
           "https://www.thecitizen.co.tz/tanzania/news/national/tanzania-tightens-ebola-screening-after-kenya-confirms-three-cases-5635806",
       },
-      { country: "DRC", iso3: "COD", number: null, extra: null, source_name: null, source_url: null },
+      {
+        country: "DRC",
+        iso3: "COD",
+        number: null,
+        extra: null,
+        source_name: null,
+        source_url: null,
+      },
     ] as {
       country: string
       iso3: string
@@ -377,10 +401,14 @@ export const en = {
     }[],
     numberPending: "Ask the nearest health facility",
     hotlineSources: "Where these numbers come from",
-    source: "Steps based on WHO and CDC guidance. Not yet reviewed by a health authority.",
+    source:
+      "Steps based on WHO and CDC guidance. Not yet reviewed by a health authority.",
     notReviewed: "Not yet reviewed by a health authority.",
     sourceLinks: [
-      { name: "WHO: Ebola disease", url: "https://www.who.int/news-room/fact-sheets/detail/ebola-disease" },
+      {
+        name: "WHO: Ebola disease",
+        url: "https://www.who.int/news-room/fact-sheets/detail/ebola-disease",
+      },
       { name: "CDC: Ebola", url: "https://www.cdc.gov/ebola/" },
     ],
   },
