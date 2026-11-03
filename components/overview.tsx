@@ -33,7 +33,7 @@ export function Overview({
       <div className="flex flex-col gap-1.5">
         <h1
           id="page-title"
-          className="font-heading text-[26px] leading-tight font-bold tracking-[-0.025em] sm:text-[32px]"
+          className="font-heading text-[26px] leading-tight font-bold tracking-[-0.015em] text-brand-blue sm:text-[32px]"
         >
           {en.overview.title}
         </h1>

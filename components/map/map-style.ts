@@ -27,7 +27,7 @@ export const STATUS_TEXT: Record<ZoneStatus, string> = {
 export const SURFACE = "#ffffff"
 export const WATER = "#d6e8f5"
 export const OUTLINE = "#9aa6b5"
-export const INK = "#0b1b2e"
+export const INK = "#202327"
 export const STALE_PATTERN_ID = "stale-hatch"
 
 export const SOURCES = {

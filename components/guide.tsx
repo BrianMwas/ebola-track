@@ -34,7 +34,7 @@ export function Guide() {
           <li key={step.title} className="grid grid-cols-[26px_minmax(0,1fr)] gap-2.5">
             <span
               aria-hidden
-              className="flex size-6.5 items-center justify-center rounded-full bg-[#0b1b2e] text-sm font-bold text-sun"
+              className="flex size-6.5 items-center justify-center rounded-full bg-[#0061a2] text-sm font-bold text-white"
             >
               {i + 1}
             </span>
