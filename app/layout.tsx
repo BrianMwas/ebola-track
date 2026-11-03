@@ -23,16 +23,16 @@ const GA_ID = "G-BBJRG25NL3"
 // time to the deployed origin (e.g. https://ebola-track.example.workers.dev).
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
 
-const title = `${en.appName} (${en.privatePreview.toLowerCase()})`
+const trackAnalytics = process.env.NODE_ENV === "production" && !!process.env.NEXT_PUBLIC_SITE_URL
 
-// Still a private preview: not indexed (see PUBLIC_LAUNCH_BLOCKED in the README).
+const title = en.appName
+
 // The preview image comes from app/opengraph-image.tsx; icons from app/icon.svg,
 // app/favicon.ico and app/apple-icon.png.
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description: en.appTagline,
-  robots: { index: false, follow: false },
   openGraph: {
     type: "website",
     url: "/",
@@ -59,13 +59,20 @@ export default function RootLayout({
       className={cn("antialiased", "font-sans", fontSans.variable, fontHeading.variable, fontMono.variable)}
     >
       <body>
-        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`window.dataLayer = window.dataLayer || [];
+        {/* Analytics only on the production site: not in dev, previews or other hosts. */}
+        {trackAnalytics && (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`if (location.origin === ${JSON.stringify(new URL(siteUrl).origin)}) {
+window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', '${GA_ID}');`}
-        </Script>
+gtag('config', '${GA_ID}');
+}`}
+            </Script>
+          </>
+        )}
         <ThemeProvider>
           {children}
         </ThemeProvider>

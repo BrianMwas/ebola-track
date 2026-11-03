@@ -1,8 +1,6 @@
 # Cloudflare response headers (Workers static assets and Pages read this file).
 
 /*
-  # Private preview: keep it out of search engines (see PUBLIC_LAUNCH_BLOCKED in the README).
-  X-Robots-Tag: noindex, nofollow
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
 

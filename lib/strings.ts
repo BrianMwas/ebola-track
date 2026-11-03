@@ -10,7 +10,6 @@ export const en = {
   appTagline: "Bundibugyo virus outbreak, 2026",
   /** Required on every page (hard rule 2 of the brief); shown under the page title. */
   disclaimer: "Unofficial and preliminary. Not medical advice.",
-  privatePreview: "Private preview",
   loading: "Loading data",
   loadError: "Data could not be loaded",
   selectPrompt:
