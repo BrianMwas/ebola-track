@@ -1,15 +1,15 @@
 {
-  "data_as_of": "2026-11-01",
+  "data_as_of": "2026-11-03",
   "countries": [
     {
       "country": "Democratic Republic of the Congo",
       "iso3": "COD",
-      "confirmed_cases": 10532,
-      "confirmed_deaths": 5126,
-      "as_of": "2026-11-01",
-      "source_name": "INSP SitRep MVE, via INRB release build-2026-11-04-1fe1da3",
-      "source_url": "https://github.com/INRB-UMIE/BDBV2026-Data/releases/tag/build-2026-11-04-1fe1da3",
-      "situation": "Active transmission in 47 health zones in the last 21 days",
+      "confirmed_cases": 10668,
+      "confirmed_deaths": 5198,
+      "as_of": "2026-11-03",
+      "source_name": "INSP SitRep MVE, via INRB release build-2026-11-05-3d91add",
+      "source_url": "https://github.com/INRB-UMIE/BDBV2026-Data/releases/tag/build-2026-11-05-3d91add",
+      "situation": "Active transmission in 45 health zones in the last 21 days",
       "situation_is_override": false,
       "classification": "local_transmission",
       "note": "Community transmission, 8 provinces",
@@ -24,17 +24,17 @@
       "reviewed_by": null,
       "zones": {
         "by_status": {
-          "active": 47,
-          "watch": 8,
+          "active": 45,
+          "watch": 10,
           "cleared": 12,
           "never": 2
         },
         "provinces_with_cases": 8,
         "unassigned_cases": 0,
         "unassigned_deaths": 493,
-        "unassigned_as_of": "2026-11-01",
-        "zone_sum_cases": 10532,
-        "zone_sum_deaths": 4633
+        "unassigned_as_of": "2026-11-03",
+        "zone_sum_cases": 10668,
+        "zone_sum_deaths": 4705
       }
     },
     {
