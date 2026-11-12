@@ -1,8 +1,8 @@
 {
-  "snapshot": "2026-11-11T12:43:59.636Z",
-  "inrb_release_tag": "build-2026-11-10-fc18dc8",
-  "inrb_build_time": "2026-11-10T23:05:36+00:00",
-  "inrb_commit": "fc18dc8",
-  "inrb_release_url": "https://github.com/INRB-UMIE/BDBV2026-Data/releases/tag/build-2026-11-10-fc18dc8",
-  "data_as_of": "2026-11-09"
+  "snapshot": "2026-11-12T13:46:47.913Z",
+  "inrb_release_tag": "build-2026-11-12-d598869",
+  "inrb_build_time": "2026-11-12T07:30:54+00:00",
+  "inrb_commit": "d598869",
+  "inrb_release_url": "https://github.com/INRB-UMIE/BDBV2026-Data/releases/tag/build-2026-11-12-d598869",
+  "data_as_of": "2026-11-10"
 }
